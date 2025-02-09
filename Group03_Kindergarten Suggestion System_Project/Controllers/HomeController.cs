@@ -6,7 +6,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Controllers
 {
     public class HomeController : Controller
     {
-        private String test;
+        
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger)
