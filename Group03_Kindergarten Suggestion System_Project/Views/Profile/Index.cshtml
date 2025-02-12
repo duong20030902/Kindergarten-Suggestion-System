@@ -1,0 +1,156 @@
+﻿@{
+    ViewData["Title"] = "User Profile";
+}
+
+<div class="container-fluid pt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mb-5">
+                <div class="card border-primary">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h4 class="card-title mb-0">
+                            <i class="fa fa-user-circle mr-2"></i>Nguyễn Văn A
+                        </h4>
+                    </div>
+                    <div class="card-body text-center">
+                        <img src="~/img/default-avatar.jpg" class="img-fluid rounded-circle mb-4"
+                             alt="Profile Picture" style="max-width: 250px;">
+
+                        <div class="mb-3">
+                            <h5 class="text-primary">
+                                <i class="fa fa-envelope mr-2"></i>Thông Tin Liên Hệ
+                            </h5>
+                            <p class="mb-1">Email: nguyenvana@example.com</p>
+                            <p>Điện Thoại: 0888 686 999</p>
+                        </div>
+
+                        <div>
+                            <h5 class="text-primary">
+                                <i class="fa fa-child mr-2"></i>Thông Tin Con
+                            </h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <div class="card border-primary">
+                                        <div class="card-body d-flex align-items-center">
+                                            <div class="rounded-circle bg-primary p-2 mr-3">
+                                                <i class="fa fa-baby text-white"></i>
+                                            </div>
+                                            <div>
+                                                <strong>Nguyễn Văn B</strong>
+                                                <p class="text-muted mb-0">Tuổi: 5 | Lớp: Mầm Non</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="mb-2">
+                                    <div class="card border-primary">
+                                        <div class="card-body d-flex align-items-center">
+                                            <div class="rounded-circle bg-primary p-2 mr-3">
+                                                <i class="fa fa-baby text-white"></i>
+                                            </div>
+                                            <div>
+                                                <strong>Nguyễn Văn C</strong>
+                                                <p class="text-muted mb-0">Tuổi: 3 | Lớp: Chồi</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-6">
+                                <a href="#" class="btn btn-primary btn-block">
+                                    <i class="fa fa-edit mr-2"></i>Chỉnh Sửa Hồ Sơ
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="#" class="btn btn-outline-primary btn-block">
+                                    <i class="fa fa-lock mr-2"></i>Đổi Mật Khẩu
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="card border-primary mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">
+                            <i class="fa fa-graduation-cap mr-2"></i>Lớp Học Hiện Tại
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100 border-primary">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-primary">Lớp Mầm Non A1</h5>
+                                        <p class="card-text">
+                                            <strong>Giáo Viên:</strong> Trần Thị D<br />
+                                            <strong>Lịch Học:</strong> Thứ 2,4,6 (8:00 - 11:00)<br />
+                                            <strong>Độ Tuổi:</strong> 3-4 tuổi
+                                        </p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <a href="#" class="btn btn-sm btn-outline-primary">Xem Chi Tiết</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100 border-primary">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-primary">Lớp Chồi B2</h5>
+                                        <p class="card-text">
+                                            <strong>Giáo Viên:</strong> Nguyễn Thị E<br />
+                                            <strong>Lịch Học:</strong> Thứ 3,5,7 (9:00 - 12:00)<br />
+                                            <strong>Độ Tuổi:</strong> 4-5 tuổi
+                                        </p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <a href="#" class="btn btn-sm btn-outline-primary">Xem Chi Tiết</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">
+                            <i class="fa fa-bell mr-2"></i>Hoạt Động Gần Đây
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Đăng Ký Lớp Học</strong>
+                                    <p class="text-muted mb-0">Đăng ký lớp Mầm Non A1 cho bé B</p>
+                                </div>
+                                <span class="badge bg-primary rounded-pill">05 Tháng 2</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Thanh Toán Học Phí</strong>
+                                    <p class="text-muted mb-0">Thanh toán học phí tháng 2 cho hai bé</p>
+                                </div>
+                                <span class="badge bg-primary rounded-pill">01 Tháng 2</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Cập Nhật Hồ Sơ</strong>
+                                    <p class="text-muted mb-0">Cập nhật thông tin liên hệ</p>
+                                </div>
+                                <span class="badge bg-primary rounded-pill">25 Tháng 1</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
