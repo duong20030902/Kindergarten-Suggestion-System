@@ -17,6 +17,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Helpers
             var routeData = htmlHelper.ViewContext.RouteData;
             var currentController = routeData.Values["controller"]?.ToString();
             return controllers.Contains(currentController) ? "active" : string.Empty;
+            Console.WriteLine("OK");
         }
     }
 }
