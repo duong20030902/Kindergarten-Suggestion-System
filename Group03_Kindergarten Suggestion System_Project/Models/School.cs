@@ -46,6 +46,10 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Models
         public string AcceptorId { get; set; }
         public User Acceptor { get; set; }
 
+        [ForeignKey("ShoolOwner")]
+        public string ShoolOwnerId { get; set; }
+        public User ShoolOwner { get; set; }
+
         public long TotalRatingCount { get; set; } = 0;
         public long TotalRating { get; set; } = 0;
 
