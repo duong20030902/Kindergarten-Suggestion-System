@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Group03_Kindergarten_Suggestion_System_Project.Data
 {
-    public class KindergartenSSDatabase : IdentityDbContext<User>
+    public class KindergartenSSDatabase : IdentityDbContext<User, Role, string>
     {
         public KindergartenSSDatabase(DbContextOptions<KindergartenSSDatabase> options) : base(options) { }
 
@@ -23,7 +23,6 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Data
         public DbSet<SchoolUtility> SchoolUtilities { get; set; }
         public DbSet<Utility> Utilities { get; set; }
         public DbSet<Ward> Wards { get; set; }
-        public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<SchoolRating> SchoolRatings { get; set; }
         public DbSet<FAQ> FAQs { get; set; }
 

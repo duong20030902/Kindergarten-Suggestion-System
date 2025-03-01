@@ -1,0 +1,74 @@
+﻿@using Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.ViewModels
+@model UserVm
+@{
+    ViewData["Title"] = "New User";
+}
+
+<div class="content-page">
+    <div class="container-fluid">
+        <form asp-area="Administration" asp-action="AddUser" asp-controller="User" enctype="multipart/form-data" method="post">
+            <div class="row">
+                <div class="col-xl-3 col-lg-4">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between">
+                            <div class="header-title">
+                                <h4 class="card-title">Add New User</h4>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <div class="crm-profile-img-edit position-relative">
+                                    <img class="crm-profile-pic rounded avatar-100" src="~/assets/images/user/avatar-default.jpg" alt="profile-pic">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>User Role:</label>
+                                <select asp-for="RoleId" asp-items="ViewBag.Roles" class="selectpicker form-control" data-style="py-0" required>
+                                    <option>Select</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-9 col-lg-8">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between">
+                            <div class="header-title">
+                                <h4 class="card-title">New User Information</h4>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="new-user-info">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label for="fname">First Name:</label>
+                                        <input asp-for="FirstName" type="text" class="form-control" id="fname" placeholder="First Name" required>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="lname">Last Name:</label>
+                                        <input asp-for="LastName" type="text" class="form-control" id="lname" placeholder="Last Name" required>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="uname">User Name:</label>
+                                        <input asp-for="UserName" type="text" class="form-control" id="uname" placeholder="User Name" required>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="email">Email:</label>
+                                        <input asp-for="Email" type="email" class="form-control" id="email" placeholder="Email" required>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label for="pass">Password:</label>
+                                        <span class="text-danger">* Hệ thống sẽ đặt mặc định: Newuser@123</span>
+                                    </div>
+                                </div>
+                                <hr>
+                                <button type="submit" class="btn btn-primary">Add New User</button>
+                                <button type="reset" class="btn btn-warning">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

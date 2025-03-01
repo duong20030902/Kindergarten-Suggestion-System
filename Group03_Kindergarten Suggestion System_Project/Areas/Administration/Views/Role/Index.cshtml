@@ -1,0 +1,186 @@
+﻿@using Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.ViewModels
+@model RoleVm
+@{
+    ViewData["Title"] = "Role Management";
+}
+
+<div class="content-page">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+                    <div>
+                        <h4 class="mb-3">Role List</h4>
+                        <p class="mb-0">Role Management allows you to create, edit, and manage user roles in the system.</p>
+                    </div>
+                    <a href="#" class="btn btn-primary add-list" data-toggle="modal" data-target="#add-role">
+                        <i class="las la-plus mr-3"></i>Add Role
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="table-responsive rounded mb-3">
+                    <table class="data-tables table mb-0 tbl-server-info">
+                        <thead class="bg-white text-uppercase">
+                            <tr class="ligth ligth-data text-center">
+                                <th class="align-middle">#</th>
+                                <th class="align-middle">Name</th>
+                                <th class="align-middle">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="ligth-body text-center">
+                            @{
+                                var index = 0;
+                            }
+                            @foreach (var role in Model.Roles)
+                            {
+                                index++;
+                                <tr>
+                                    <td class="align-middle">@index</td>
+                                    <td class="align-middle">
+                                        @if (role.Name == "Admin")
+                                        {
+                                            <div class="badge badge-success">@role.Name</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="badge badge-warning">@role.Name</div>
+                                        }
+                                    </td>
+                                    <td class="align-middle">
+                                        @if (role.Name != "Admin")
+                                        {
+                                            <div class="d-flex align-items-center list-action">
+                                                <a class="badge bg-success mr-2" data-placement="top" title="" data-original-title="Edit"
+                                                   href="#" data-toggle="modal" data-target="#edit-role" onclick="editRole('@role.Id', '@role.Name')">
+                                                    <i class="ri-pencil-line mr-0"></i>
+                                                </a>
+                                            </div>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Role Modal -->
+    <div class="modal fade" id="edit-role" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="popup text-left">
+                        <div class="media align-items-top justify-content-between">
+                            <h3 class="mb-3">Edit Role <span id="modalRoleName"></span></h3>
+                            <div class="btn-cancel p-0" data-dismiss="modal"><i class="las la-times"></i></div>
+                        </div>
+                        <div class="content edit-notes">
+                            <form asp-area="Administration" asp-controller="Role" asp-action="EditRole" method="post" enctype="multipart/form-data" class="card card-transparent card-block card-stretch event-note mb-0">
+                                <input type="hidden" id="editRoleId" name="Id" />
+                                <div class="card-body px-0 bukmark">
+                                    <div class="form-group">
+                                        <label for="role-name">Role Name</label>
+                                        <input asp-for="Name" id="editRoleName" type="text" class="form-control" placeholder="Enter role name" required>
+                                    </div>
+                                </div>
+                                <div class="card-footer border-0">
+                                    <div class="d-flex flex-wrap align-items-center justify-content-end">
+                                        <button class="btn btn-primary mr-3" data-dismiss="modal">Cancel</button>
+                                        <button class="btn btn-outline-primary" type="submit">Save</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Role Modal -->
+    <div class="modal fade" id="add-role" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="popup text-left">
+                        <div class="media align-items-top justify-content-between">
+                            <h3 class="mb-3">Add Role</h3>
+                            <div class="btn-cancel p-0" data-dismiss="modal"><i class="las la-times"></i></div>
+                        </div>
+                        <div class="content edit-notes">
+                            <form asp-area="Administration" asp-controller="Role" asp-action="AddRole" method="post" enctype="multipart/form-data" class="card card-transparent card-block card-stretch event-note mb-0">
+                                <div class="card-body px-0 bukmark">
+                                    <div class="form-group">
+                                        <label for="new-role-name">Role Name</label>
+                                        <input asp-for="Name" type="text" class="form-control" placeholder="Enter role name" required>
+                                    </div>
+                                </div>
+                                <div class="card-footer border-0">
+                                    <div class="d-flex flex-wrap align-items-center justify-content-end">
+                                        <button class="btn btn-primary mr-3" data-dismiss="modal">Cancel</button>
+                                        <button class="btn btn-outline-primary" type="submit">Add</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        @if (TempData["success"] != null)
+        {
+            <text>
+                        Swal.fire({
+                            title: 'Success!',
+                            text: '@TempData["success"]',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+            </text>
+        }
+
+        @if (TempData["warning"] != null)
+        {
+            <text>
+                        Swal.fire({
+                            title: 'Warning!',
+                            text: '@TempData["warning"]',
+                            icon: 'warning',
+                            confirmButtonText: 'OK'
+                        });
+            </text>
+        }
+
+        @if (TempData["error"] != null)
+        {
+            <text>
+                        Swal.fire({
+                            title: 'Error!',
+                            text: '@TempData["error"]',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+            </text>
+        }
+        });
+
+        function editRole(id, name) { 
+            document.getElementById("editRoleId").value = id;
+            document.getElementById("editRoleName").value = name;
+            document.getElementById("modalRoleName").textContent = name;
+        }
+    </script>
+}
