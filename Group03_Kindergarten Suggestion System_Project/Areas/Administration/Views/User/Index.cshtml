@@ -1,0 +1,106 @@
+﻿@using Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.ViewModels
+@model IEnumerable<UserRoleVm>
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<div class="content-page">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <div class="header-title">
+                            <h4 class="card-title">User List</h4>
+                        </div>
+                        <div class="header-title">
+                            <a asp-area="Administration" asp-action="AddUser" asp-controller="User"
+                               class="btn btn-outline-primary border add-btn shadow-none mx-2 d-none d-md-block">
+                                <i class="las la-plus mr-2"></i>New User
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <div class="row justify-content-between mb-3">
+                                <div class="col-sm-12">
+                                    <div class="user-list-files d-flex">
+                                        <a href="#" class="bg-primary">
+                                            Print
+                                        </a>
+                                        <a asp-area="Administration" asp-action="ExportToExcel" asp-controller="User" class="bg-primary">
+                                            Excel
+                                        </a>
+                                        <a href="#" class="bg-primary">
+                                            Pdf
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <table id="user-list-table" class="data-tables table table-striped dataTable mt-4" role="grid"
+                                   aria-describedby="user-list-page-info">
+                                <thead>
+                                    <tr class="ligth">
+                                        <th>Profile</th>
+                                        <th>Name</th>
+                                        <th>User Name</th>
+                                        <th>Email</th>
+                                        <th>Status</th>
+                                        <th>Join Date</th>
+                                        <th>Role</th>
+                                        <th>Credentials</th>
+                                        <th style="min-width: 63px">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var user in Model)
+                                    {
+                                        <tr>
+                                            <td class="text-center">
+                                                <img class="rounded img-fluid avatar-40"
+                                                     src="@(user.User.Image != null ? Url.Content($"~/img/users/{user.User.Image}")
+                                                        : Url.Content("~/assets/images/user/avatar-default.jpg"))"
+                                                     alt="profile">
+                                            </td>
+                                            <td>@user.User.FirstName @user.User.LastName</td>
+                                            <td>@user.User.UserName</td>
+                                            <td>@user.User.Email</td>
+                                            <td>
+                                                @if (user.User.EmailConfirmed)
+                                                {
+                                                    <span class="badge bg-primary">Active</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-warning">Inactive</span>
+                                                }
+                                            </td>
+                                            <td>@user.User.CreatedAt.ToString("dd/MM/yyyy")</td>
+                                            <td>@user.RoleName</td>
+                                            <td>
+                                                @if (!user.User.EmailConfirmed)
+                                                {
+                                                    <a asp-action="ResendCredentials" asp-route-userId="@user.User.Id" class="btn btn-warning btn-sm">Resend Credentials</a>
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="flex align-items-center list-user-action">
+                                                    <a class="btn btn-sm bg-primary" data-toggle="tooltip" data-placement="top" title="View" href="#">
+                                                        <i class="ri-eye-line mr-0"></i>
+                                                    </a>
+                                                    <a class="btn btn-sm bg-primary" data-toggle="tooltip" data-placement="top" title="Edit" href="#">
+                                                        <i class="ri-pencil-line mr-0"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

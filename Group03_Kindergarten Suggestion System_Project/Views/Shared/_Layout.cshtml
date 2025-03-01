@@ -1,49 +1,221 @@
-﻿<!DOCTYPE html>
+﻿@using Group03_Kindergarten_Suggestion_System_Project.Helpers
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Group03_Kindergarten_Suggestion_System_Project</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Group03_Kindergarten_Suggestion_System_Project.styles.css" asp-append-version="true" />
+    <meta charset="utf-8">
+    <title>@ViewData["Title"] - KidKinder</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description">
+    <link href="~/img/favicon.ico" rel="icon">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Handlee&family=Nunito&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="~/lib/flaticon/font/flaticon.css" rel="stylesheet">
+    <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="~/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+    <link href="~/css/style.css" rel="stylesheet">
 </head>
+
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Group03_Kindergarten_Suggestion_System_Project</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+    <div class="container-fluid bg-light position-relative shadow">
+        <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0 px-lg-5">
+            <a href="" class="navbar-brand font-weight-bold text-secondary" style="font-size: 50px;">
+                <i class="flaticon-043-teddy-bear"></i>
+                <span class="text-primary">KidKinder</span>
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                <div class="navbar-nav font-weight-bold mx-auto py-0">
+                    <a asp-controller="Home" asp-action="Index" class="nav-item nav-link @Html.IsActive("Home", "Index")">Home</a>
+                    <a asp-controller="About" asp-action="Index" class="nav-item nav-link @Html.IsActive("About", "Index")">About</a>
+                    <a asp-controller="Class" asp-action="Index" class="nav-item nav-link @Html.IsActive("Class", "Index")">Classes</a>
+                    <a asp-controller="Teacher" asp-action="Index" class="nav-item nav-link @Html.IsActive("Teacher", "Index")">Teachers</a>
+                    <a asp-controller="Gallery" asp-action="Index" class="nav-item nav-link @Html.IsActive("Gallery", "Index")">Gallery</a>
+                    <a asp-controller="Blog" asp-action="Index" class="nav-item nav-link @Html.IsActive("Blog", "Index")">Blog</a>
+                    <a asp-controller="Contact" asp-action="Index" class="nav-item nav-link @Html.IsActive("Contact", "Index")">Contact</a>
                 </div>
+                @if (User.Identity?.IsAuthenticated ?? false)
+                {
+                    <div class="d-flex align-items-center">
+                        <a asp-controller="Class" asp-action="Join" class="btn btn-primary px-4 me-3">Join Class</a>
+                        <div class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-toggle="dropdown">
+                                <i class="fa fa-user-circle fa-2x me-2"></i>
+                                <span class="d-none d-lg-inline">@User.Identity.Name</span>
+                            </a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a class="dropdown-item" href="#"><i class="fa fa-user me-2"></i>My Profile</a>
+                                <a class="dropdown-item" href="#"><i class="fa fa-graduation-cap me-2"></i>My Classes</a>
+                                <hr class="dropdown-divider">
+                                <form asp-controller="Authentication" asp-action="Logout" method="post" id="logoutForm">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        <i class="fa fa-sign-out me-2"></i>Đăng xuất
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="d-flex align-items-center">
+                        <div class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-toggle="dropdown">
+                                <i class="fa fa-user-circle fa-2x me-2"></i>
+                            </a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#loginModal">
+                                    <i class="fa fa-sign-in-alt me-2"></i> Login
+                                </a>
+                                <a class="dropdown-item" asp-controller="Authentication" asp-action="Register"><i class="fa fa-registered me-2"></i> Sign Up</a>
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
         </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - Group03_Kindergarten_Suggestion_System_Project - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    @RenderBody()
+
+    <div class="container-fluid bg-secondary text-white mt-5 py-3 px-sm-3 px-md-5">
+        <div class="row pt-5">
+            <div class="col-lg-3 col-md-6 mb-5">
+                <a href="" class="navbar-brand font-weight-bold text-primary m-0 mb-4 p-0" style="font-size: 40px; line-height: 40px;">
+                    <i class="flaticon-043-teddy-bear"></i>
+                    <span class="text-white">KidKinder</span>
+                </a>
+                <p>Accompanying teachers and parents with creative ideas to help children develop comprehensively, explore a colorful world, and build a solid foundation for the future!</p>
+                <div class="d-flex justify-content-start mt-4">
+                    <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0"
+                       style="width: 38px; height: 38px;" href="#"><i class="fab fa-twitter"></i></a>
+                    <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0"
+                       style="width: 38px; height: 38px;" href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0"
+                       style="width: 38px; height: 38px;" href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0"
+                       style="width: 38px; height: 38px;" href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-5">
+                <h3 class="text-primary mb-4">Get In Touch</h3>
+                <div class="d-flex">
+                    <h4 class="fa fa-map-marker-alt text-primary"></h4>
+                    <div class="pl-3">
+                        <h5 class="text-white">Address</h5>
+                        <p>Việt Nam 🇻🇳</p>
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <h4 class="fa fa-envelope text-primary"></h4>
+                    <div class="pl-3">
+                        <h5 class="text-white">Email</h5>
+                        <p>kidkinder@contact.com</p>
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <h4 class="fa fa-phone-alt text-primary"></h4>
+                    <div class="pl-3">
+                        <h5 class="text-white">Phone</h5>
+                        <p>+84 888 686 999</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-5">
+                <h3 class="text-primary mb-4">Quick Links</h3>
+                <div class="d-flex flex-column justify-content-start">
+                    <a class="text-white mb-2" asp-controller="Home" asp-action="Index"><i class="fa fa-angle-right mr-2"></i>Home</a>
+                    <a class="text-white mb-2" asp-controller="About" asp-action="Index"><i class="fa fa-angle-right mr-2"></i>About Us</a>
+                    <a class="text-white mb-2" asp-controller="Class" asp-action="Index"><i class="fa fa-angle-right mr-2"></i>Our Classes</a>
+                    <a class="text-white mb-2" asp-controller="Teacher" asp-action="Index"><i class="fa fa-angle-right mr-2"></i>Our Teachers</a>
+                    <a class="text-white mb-2" asp-controller="Gallery" asp-action="Index"><i class="fa fa-angle-right mr-2"></i>Our Gallery</a>
+                    <a class="text-white mb-2" asp-controller="Blog" asp-action="Index"><i class="fa fa-angle-right mr-2"></i>Our Blog</a>
+                    <a class="text-white" asp-controller="Contact" asp-action="Index"><i class="fa fa-angle-right mr-2"></i>Contact Us</a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-5">
+                <h3 class="text-primary mb-4">Newsletter</h3>
+                <form action="">
+                    <div class="form-group">
+                        <input type="text" class="form-control border-0 py-4" placeholder="Your Name" required="required" />
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-control border-0 py-4" placeholder="Your Email"
+                               required="required" />
+                    </div>
+                    <div>
+                        <button class="btn btn-primary btn-block border-0 py-3" type="submit">Submit Now</button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    </div>
+    <a href="#" class="btn btn-primary p-3 back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0">
+                <div class="modal-header bg-primary border-0">
+                    <h5 class="modal-title text-white font-weight-bold" id="loginModalLabel">Choose Login Type</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <a asp-controller="Authentication" asp-action="Login" class="card text-decoration-none border-primary">
+                                <div class="card-body d-flex align-items-center p-4">
+                                    <div class="rounded-circle bg-primary p-3 mr-4">
+                                        <i class="fa fa-users fa-2x text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="card-title text-primary mb-1">Parent Login</h5>
+                                        <p class="card-text text-muted mb-0">Access your parent or teacher account</p>
+                                    </div>
+                                    <i class="fa fa-chevron-right ml-auto text-primary"></i>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-12">
+                            <a asp-area="Administration" asp-controller="Auth" asp-action="Login" class="card text-decoration-none border-primary">
+                                <div class="card-body d-flex align-items-center p-4">
+                                    <div class="rounded-circle bg-primary p-3 mr-4">
+                                        <i class="fa fa-user-shield fa-2x text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="card-title text-primary mb-1">Administrator Login</h5>
+                                        <p class="card-text text-muted mb-0">Access system administration</p>
+                                    </div>
+                                    <i class="fa fa-chevron-right ml-auto text-primary"></i>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <p class="text-muted w-100 text-center mb-0">
+                        Don't have an account?
+                        <a asp-controller="Authentication" asp-action="Register" class="text-primary text-decoration-none font-weight-bold">Sign Up</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/easing/easing.min.js"></script>
+    <script src="~/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="~/lib/isotope/isotope.pkgd.min.js"></script>
+    <script src="~/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="~/mail/jqBootstrapValidation.min.js"></script>
+    <script src="~/mail/contact.js"></script>
+    <script src="~/js/main.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

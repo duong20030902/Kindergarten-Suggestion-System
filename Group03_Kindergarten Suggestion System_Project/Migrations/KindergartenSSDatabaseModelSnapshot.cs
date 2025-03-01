@@ -225,38 +225,34 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                     b.ToTable("Provinces");
                 });
 
-            modelBuilder.Entity("Group03_Kindergarten_Suggestion_System_Project.Models.RefreshToken", b =>
+            modelBuilder.Entity("Group03_Kindergarten_Suggestion_System_Project.Models.Role", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("DateAdded")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DateExpire")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsRevoked")
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<string>("JwtId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("RefreshTokens");
+                    b.ToTable("AspNetRoles", (string)null);
                 });
 
             modelBuilder.Entity("Group03_Kindergarten_Suggestion_System_Project.Models.School", b =>
@@ -317,6 +313,10 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                     b.Property<Guid>("SchoolTypeId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("ShoolOwnerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -342,6 +342,8 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                     b.HasIndex("EducationMethodId");
 
                     b.HasIndex("SchoolTypeId");
+
+                    b.HasIndex("ShoolOwnerId");
 
                     b.ToTable("Schools");
                 });
@@ -477,7 +479,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("AddressId")
+                    b.Property<Guid?>("AddressId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("BirthDate")
@@ -497,7 +499,11 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("FullName")
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -506,6 +512,10 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -531,7 +541,6 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("RoleId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
@@ -597,33 +606,6 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                     b.HasIndex("DistrictId");
 
                     b.ToTable("Wards");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("AspNetRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -796,17 +778,6 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                         .HasForeignKey("SchoolId");
                 });
 
-            modelBuilder.Entity("Group03_Kindergarten_Suggestion_System_Project.Models.RefreshToken", b =>
-                {
-                    b.HasOne("Group03_Kindergarten_Suggestion_System_Project.Models.User", "User")
-                        .WithMany("RefreshTokens")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Group03_Kindergarten_Suggestion_System_Project.Models.School", b =>
                 {
                     b.HasOne("Group03_Kindergarten_Suggestion_System_Project.Models.User", "Acceptor")
@@ -845,6 +816,12 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Group03_Kindergarten_Suggestion_System_Project.Models.User", "ShoolOwner")
+                        .WithMany()
+                        .HasForeignKey("ShoolOwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Acceptor");
 
                     b.Navigation("Address");
@@ -856,6 +833,8 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                     b.Navigation("EducationMethod");
 
                     b.Navigation("SchoolType");
+
+                    b.Navigation("ShoolOwner");
                 });
 
             modelBuilder.Entity("Group03_Kindergarten_Suggestion_System_Project.Models.SchoolEnrollment", b =>
@@ -938,9 +917,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                 {
                     b.HasOne("Group03_Kindergarten_Suggestion_System_Project.Models.Address", "Address")
                         .WithMany()
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AddressId");
 
                     b.Navigation("Address");
                 });
@@ -958,7 +935,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Group03_Kindergarten_Suggestion_System_Project.Models.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -985,7 +962,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Group03_Kindergarten_Suggestion_System_Project.Models.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1019,11 +996,6 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                     b.Navigation("SchoolFacilities");
 
                     b.Navigation("SchoolUtilities");
-                });
-
-            modelBuilder.Entity("Group03_Kindergarten_Suggestion_System_Project.Models.User", b =>
-                {
-                    b.Navigation("RefreshTokens");
                 });
 
             modelBuilder.Entity("Group03_Kindergarten_Suggestion_System_Project.Models.Utility", b =>

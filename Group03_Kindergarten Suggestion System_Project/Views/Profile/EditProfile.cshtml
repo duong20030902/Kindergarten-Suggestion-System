@@ -1,0 +1,67 @@
+﻿@{
+    ViewData["Title"] = "Chỉnh Sửa Hồ Sơ";
+}
+
+<div class="container-fluid pt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">
+                            <i class="fa fa-user-edit mr-2"></i>Chỉnh Sửa Hồ Sơ
+                        </h3>
+                    </div>
+                    <form>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 text-center mb-4">
+                                    <img src="~/img/default-avatar.jpg" class="img-fluid rounded-circle mb-3"
+                                         alt="Profile Picture" style="max-width: 200px;">
+                                    <div>
+                                        <label class="btn btn-primary">
+                                            <i class="fa fa-upload mr-2"></i>Tải Ảnh Mới
+                                            <input type="file" class="d-none">
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label class="text-primary">Họ và Tên</label>
+                                        <input type="text" class="form-control" value="Nguyễn Văn A">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="text-primary">Email</label>
+                                        <input type="email" class="form-control" value="nguyenvana@example.com">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="text-primary">Số Điện Thoại</label>
+                                        <input type="tel" class="form-control" value="0888 686 999">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="text-primary">Địa Chỉ</label>
+                                        <textarea class="form-control" rows="3">Hà Nội, Việt Nam</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-primary btn-block">
+                                        <i class="fa fa-save mr-2"></i>Lưu Thay Đổi
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <a href="#" class="btn btn-outline-primary btn-block">
+                                        <i class="fa fa-times mr-2"></i>Hủy
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
