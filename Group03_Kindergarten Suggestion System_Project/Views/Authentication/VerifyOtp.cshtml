@@ -1,0 +1,408 @@
+﻿@* @using Group03_Kindergarten_Suggestion_System_Project.ViewModels
+@model VerifyOtpVm
+@{
+    ViewData["Title"] = "Verify OTP";
+}
+
+<style>
+    .card {
+        border-radius: 15px;
+        transition: transform 0.3s;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+    .form-control {
+        height: 50px;
+        border-radius: 10px;
+    }
+
+    .otp-input {
+        width: 50px;
+        height: 50px;
+        text-align: center;
+        font-size: 24px;
+        margin: 0 5px;
+        border: 2px solid #17a2b8;
+        border-radius: 10px;
+    }
+
+    #countdown {
+        font-size: 18px;
+        color: #17a2b8;
+        font-weight: bold;
+    }
+</style>
+
+<div class="container-fluid py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-lg rounded-lg">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <h1 class="text-primary font-weight-bold">Verify OTP</h1>
+                            <img src="~/img/email-mail-sent-icon.png" alt="Email Sent" class="img-fluid mb-3" style="max-width: 150px;">
+                            <p class="text-muted">We've sent a verification code to your email.</p>
+                            <p class="text-muted">Code expires in: <span id="countdown">5:00</span></p>
+                        </div>
+                        <form id="otpForm" class="text-center" asp-controller="Authentication" asp-action="VerifyOTP" method="post">
+                            <input type="hidden" asp-for="Email" />
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                            <div class="d-flex justify-content-center mb-4">
+                                <input type="number" class="otp-input" maxlength="1" pattern="[0-9]" required>
+                                <input type="number" class="otp-input" maxlength="1" pattern="[0-9]" required>
+                                <input type="number" class="otp-input" maxlength="1" pattern="[0-9]" required>
+                                <input type="number" class="otp-input" maxlength="1" pattern="[0-9]" required>
+                                <input type="number" class="otp-input" maxlength="1" pattern="[0-9]" required>
+                                <input type="number" class="otp-input" maxlength="1" pattern="[0-9]" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block py-2 mb-3">Verify OTP</button>
+                            <p class="text-muted mb-0">
+                                Didn't receive the code?
+                                <a href="#" id="resendOtp" class="text-primary font-weight-bold">Resend OTP</a>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            let timeLeft = 300; // 5 minutes in seconds
+            let countdownTimer;
+
+            function startCountdown() {
+                clearInterval(countdownTimer);
+                updateCountdown();
+                countdownTimer = setInterval(updateCountdown, 1000);
+            }
+
+            function updateCountdown() {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                $('#countdown').text(`${minutes}:${seconds.toString().padStart(2, '0')}`);
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdownTimer);
+                    alert('OTP has expired. Please request a new one.');
+                } else {
+                    timeLeft--;
+                }
+            }
+
+            $('.otp-input').on('input', function() {
+                if (this.value.length === 1) {
+                    $(this).next('.otp-input').focus();
+                }
+            });
+
+            $('.otp-input').on('keydown', function(e) {
+                if (e.key === 'Backspace' && !this.value) {
+                    $(this).prev('.otp-input').focus();
+                }
+            });
+
+            $('#resendOtp').on('click', function(e) {
+                e.preventDefault();
+                timeLeft = 300;
+                startCountdown();
+                alert('New OTP has been sent to your email!');
+            });
+
+            startCountdown();
+        });
+    </script>
+}
+ *@
+
+            @using Group03_Kindergarten_Suggestion_System_Project.ViewModels
+@model VerifyOtpVm
+@{
+    ViewData["Title"] = "Verify OTP";
+}
+
+<style>
+    .card {
+        border-radius: 15px;
+        transition: transform 0.3s;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+    .form-control {
+        height: 50px;
+        border-radius: 10px;
+    }
+
+    .otp-input {
+        width: 50px;
+        height: 50px;
+        text-align: center;
+        font-size: 24px;
+        margin: 0 5px;
+        border: 2px solid #17a2b8;
+        border-radius: 10px;
+        outline: none;
+    }
+
+        .otp-input:focus {
+            border-color: #007bff;
+        }
+
+    #countdown {
+        font-size: 18px;
+        color: #17a2b8;
+        font-weight: bold;
+    }
+
+    .disabled {
+        pointer-events: none;
+        opacity: 0.5;
+    }
+</style>
+
+<div class="container-fluid py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-lg rounded-lg">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <h1 class="text-primary font-weight-bold">Verify OTP</h1>
+                            <img src="~/img/email-mail-sent-icon.png" alt="Email Sent" class="img-fluid mb-3" style="max-width: 150px;">
+                            <p class="text-muted">We've sent a verification code to your email.</p>
+                            <p class="text-muted">Code expires in: <span id="countdown">5:00</span></p>
+                        </div>
+                        <form id="otpForm" class="text-center" asp-controller="Authentication" asp-action="VerifyOTP" method="post">
+                            <input type="hidden" asp-for="Email" />
+                            <input type="hidden" asp-for="Otp" id="combinedOtp" />
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                            <div class="d-flex justify-content-center mb-4">
+                                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
+                                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
+                                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
+                                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
+                                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
+                                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block py-2 mb-3">Verify OTP</button>
+                            <p class="text-muted mb-0">
+                                Didn't receive the code?
+                                <a href="#" id="resendOtp" class="text-primary font-weight-bold">Resend OTP</a>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @* <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const otpInputs = document.querySelectorAll(".otp-input");
+            const countdownElem = document.getElementById("countdown");
+            const resendBtn = document.getElementById("resendOtp");
+            let timer = 300;
+            let resendCooldown = 60;
+            let countdownTimer;
+
+            function startCountdown() {
+                clearInterval(countdownTimer);
+                updateCountdown();
+                countdownTimer = setInterval(updateCountdown, 1000);
+            }
+
+            function updateCountdown() {
+                const minutes = Math.floor(timer / 60);
+                const seconds = timer % 60;
+                countdownElem.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+                if (timer <= 0) {
+                    clearInterval(countdownTimer);
+                    alert('OTP has expired. Please request a new one.');
+                } else {
+                    timer--;
+                }
+            }
+
+            // Xử lý nhập OTP (chuyển tự động giữa các ô)
+            otpInputs.forEach((input, index) => {
+                input.addEventListener("input", function () {
+                    if (this.value.length === 1 && index < otpInputs.length - 1) {
+                        otpInputs[index + 1].focus();
+                    }
+                });
+
+                input.addEventListener("keydown", function (e) {
+                    if (e.key === "Backspace" && !this.value && index > 0) {
+                        otpInputs[index - 1].focus();
+                    }
+                });
+            });
+
+            // Xử lý gửi lại OTP
+            resendBtn.addEventListener("click", function (event) {
+                event.preventDefault();
+                resendBtn.classList.add("disabled");
+                resendBtn.style.pointerEvents = "none";
+
+                // Bắt đầu đếm ngược cooldown cho resend
+                let cooldown = resendCooldown;
+                resendBtn.textContent = `Resend OTP (${cooldown}s)`;
+                let cooldownTimer = setInterval(() => {
+                    cooldown--;
+                    resendBtn.textContent = `Resend OTP (${cooldown}s)`;
+                    if (cooldown <= 0) {
+                        clearInterval(cooldownTimer);
+                        resendBtn.classList.remove("disabled");
+                        resendBtn.style.pointerEvents = "auto";
+                        resendBtn.textContent = "Resend OTP";
+                    }
+                }, 1000);
+
+                timer = 300;
+                startCountdown();
+
+                fetch('/Authentication/ResendOtp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ email: document.querySelector('input[name="Email"]').value })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+            });
+
+            startCountdown();
+        });
+    </script> *@
+
+    <script>
+                document.addEventListener("DOMContentLoaded", function () {
+            const otpInputs = document.querySelectorAll(".otp-input");
+            const otpForm = document.getElementById("otpForm");
+            const countdownElem = document.getElementById("countdown");
+            const resendBtn = document.getElementById("resendOtp");
+            const combinedOtpInput = document.getElementById("combinedOtp");
+            let timer = 300;
+            let resendCooldown = 60;
+            let countdownTimer;
+
+            function startCountdown() {
+                clearInterval(countdownTimer);
+                updateCountdown();
+                countdownTimer = setInterval(updateCountdown, 1000);
+            }
+
+            function updateCountdown() {
+                const minutes = Math.floor(timer / 60);
+                const seconds = timer % 60;
+                countdownElem.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+                if (timer <= 0) {
+                    clearInterval(countdownTimer);
+                    alert('OTP has expired. Please request a new one.');
+                } else {
+                    timer--;
+                }
+            }
+
+            // Handle OTP input
+            otpInputs.forEach((input, index) => {
+                input.addEventListener("input", function () {
+                    if (this.value.length === 1) {
+                        if (index < otpInputs.length - 1) {
+                            otpInputs[index + 1].focus();
+                        }
+                        updateCombinedOtp();
+                    }
+                });
+
+                input.addEventListener("keydown", function (e) {
+                    if (e.key === "Backspace" && !this.value && index > 0) {
+                        otpInputs[index - 1].focus();
+                        updateCombinedOtp();
+                    }
+                });
+            });
+
+            // Update hidden combined OTP field
+            function updateCombinedOtp() {
+                const otp = Array.from(otpInputs).map(input => input.value).join('');
+                combinedOtpInput.value = otp;
+            }
+
+            // Form submit handler
+            otpForm.addEventListener("submit", function(e) {
+                e.preventDefault();
+                updateCombinedOtp();
+
+                // Only submit if all OTP digits are filled
+                if (combinedOtpInput.value.length === 6) {
+                    this.submit();
+                } else {
+                    alert("Please enter all 6 digits of the OTP");
+                }
+            });
+
+            // Handle resend OTP
+            resendBtn.addEventListener("click", function (event) {
+                event.preventDefault();
+                resendBtn.classList.add("disabled");
+                resendBtn.style.pointerEvents = "none";
+
+                let cooldown = resendCooldown;
+                resendBtn.textContent = `Resend OTP (${cooldown}s)`;
+                let cooldownTimer = setInterval(() => {
+                    cooldown--;
+                    resendBtn.textContent = `Resend OTP (${cooldown}s)`;
+                    if (cooldown <= 0) {
+                        clearInterval(cooldownTimer);
+                        resendBtn.classList.remove("disabled");
+                        resendBtn.style.pointerEvents = "auto";
+                        resendBtn.textContent = "Resend OTP";
+                    }
+                }, 1000);
+
+                timer = 300;
+                startCountdown();
+
+                fetch('/Authentication/ResendOtp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ email: document.querySelector('input[name="Email"]').value })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+            });
+
+            startCountdown();
+        });
+    </script>
+}
