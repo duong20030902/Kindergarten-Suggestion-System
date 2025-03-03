@@ -1,0 +1,283 @@
+﻿@using Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.ViewModels
+@model UserRoleVm
+@{
+    ViewData["Title"] = @Model.User.FirstName + " " + @Model.User.LastName;
+}
+
+<style>
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 30px;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+        input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+</style>
+
+<div class="content-page">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <div class="header-title">
+                            <h4 class="card-title">User Details</h4>
+                        </div>
+                        <div class="header-title">
+                            <a asp-area="Administration" asp-action="Index" asp-controller="User"
+                               class="btn btn-outline-primary border add-btn shadow-none mx-2 d-none d-md-block">
+                                <i class="las la-arrow-left mr-2"></i>Back to User List
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <img class="rounded img-fluid avatar-200 mb-3"
+                                         src="@(Model.User.Image != null ? Url.Content($"~/img/users/{Model.User.Image}") : Url.Content("~/assets/images/user/avatar-default.jpg"))"
+                                         alt="User Profile">
+                                    <h5 class="mb-0">@Model.User.FirstName @Model.User.LastName</h5>
+                                    <p class="text-muted">@Model.RoleName</p>
+                                    <div class="mt-2" id="resendCredentialsContainer">
+                                        @if (!Model.User.EmailConfirmed)
+                                        {
+                                            <a asp-area="Administration" asp-action="ResendCredentials" asp-route-userId="@Model.User.Id" class="btn btn-warning">Resend Credentials</a>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <th>User Name</th>
+                                                <td>@Model.User.UserName</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Email</th>
+                                                <td>@Model.User.Email</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Phone</th>
+                                                <td>@Model.User.PhoneNumber</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Birth Date</th>
+                                                <td>@Model.User.BirthDate.ToString("MMMM d, yyyy")</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Address</th>
+                                                <td>@Model.User.Address</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Status</th>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        @if (Model.User.EmailConfirmed)
+                                                        {
+                                                            <span class="badge bg-primary mr-2">Active</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="badge bg-warning mr-2">Inactive</span>
+                                                        }
+                                                        <label class="switch">
+                                                            <input type="checkbox" class="status-toggle" data-id="@Model.User.Id" @(Model.User.EmailConfirmed ? "checked" : "")>
+                                                            <span class="slider"></span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Join Date</th>
+                                                <td>@Model.User.CreatedAt.ToString("dddd, MMMM d, yyyy HH:mm")</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Update At</th>
+                                                <td>@Model.User.UpdatedAt</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Role</th>
+                                                <td>@Model.RoleName</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="mt-0">
+                                    <a asp-area="Administration" asp-action="EditUser" asp-route-id="@Model.User.Id" class="btn btn-primary ml-2">Edit</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content-page">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="header-title">
+                            <h4 class="card-title">Last Update</h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        @if (ViewBag.PreviousUserData != null)
+                        {
+                            var previousData = (Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.ViewModels.ArchiveData.PreviousUserData)ViewBag.PreviousUserData;
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <th>Full Name</th>
+                                            <td>@previousData.FirstName @previousData.LastName</td>
+                                        </tr>
+                                        <tr>
+                                            <th>User Name</th>
+                                            <td>@previousData.UserName</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Email</th>
+                                            <td>@previousData.Email</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Phone</th>
+                                            <td>@previousData.PhoneNumber</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Birth Date</th>
+                                            <td>@previousData.BirthDate</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Status</th>
+                                            <td>@previousData.EmailConfirmed</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Role</th>
+                                            <td>@ViewBag.PreviousRoleName</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Last Updated At</th>
+                                            <td>@previousData.UpdatedAt</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                        else if (Model.User.UpdatedAt.HasValue)
+                        {
+                            <p>Last Updated At: @Model.User.UpdatedAt.Value.ToString("dddd, MMMM d, yyyy HH:mm") (No previous data available)</p>
+                        }
+                        else
+                        {
+                            <p>No updates have been made yet.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form id="antiForgeryForm" method="post" style="display: none;">
+    @Html.AntiForgeryToken()
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.status-toggle').on('change', function () {
+                var userId = $(this).data('id');
+                var isChecked = $(this).is(':checked');
+                var token = $('#antiForgeryForm input[name="__RequestVerificationToken"]').val();
+                var $resendContainer = $('#resendCredentialsContainer');
+
+                if (!userId) {
+                    alert('Invalid user ID.');
+                    $(this).prop('checked', !isChecked);
+                    return;
+                }
+
+                $.ajax({
+                    url: '@Url.Action("ToggleStatus", "User", new { area = "Administration" })',
+                    type: 'POST',
+                    data: { userId: userId, emailConfirmed: isChecked, __RequestVerificationToken: token },
+                    success: function (response) {
+                        if (response.success) {
+                            var badge = $(`input[data-id="${userId}"]`).closest('td').find('.badge');
+                            if (isChecked) {
+                                badge.removeClass('bg-warning').addClass('bg-primary').text('Active');
+                                $resendContainer.empty(); // Ẩn nút Resend Credentials khi Active
+                            } else {
+                                badge.removeClass('bg-primary').addClass('bg-warning').text('Inactive');
+                                $resendContainer.html('<a asp-action="ResendCredentials" asp-route-userId="@Model.User.Id" class="btn btn-warning">Resend Credentials</a>'); // Hiển thị lại nút
+                            }
+                        } else {
+                            alert('Failed to update status: ' + response.message);
+                            $(this).prop('checked', !isChecked); // Revert toggle on failure
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        var errorMessage = 'Error occurred while updating status.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message; // Lấy message từ JSON response
+                        } else if (xhr.statusText) {
+                            errorMessage = 'HTTP Error: ' + xhr.status + ' - ' + xhr.statusText;
+                        }
+                        console.error('ToggleStatus Error:', {
+                            status: status,
+                            error: error,
+                            response: xhr.responseText,
+                            message: errorMessage
+                        });
+                        alert(errorMessage);
+                        $(this).prop('checked', !isChecked); // Revert toggle on error
+                    }
+                });
+            });
+        });
+    </script>
+}

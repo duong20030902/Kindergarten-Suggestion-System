@@ -4,6 +4,7 @@ using Group03_Kindergarten_Suggestion_System_Project.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
 {
     [DbContext(typeof(KindergartenSSDatabase))]
-    partial class KindergartenSSDatabaseModelSnapshot : ModelSnapshot
+    [Migration("20250302070422_UpdateTableSchoolEnrollment")]
+    partial class UpdateTableSchoolEnrollment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -575,58 +578,6 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Group03_Kindergarten_Suggestion_System_Project.Models.UserHistory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("BirthDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserHistories");
-                });
-
             modelBuilder.Entity("Group03_Kindergarten_Suggestion_System_Project.Models.Utility", b =>
                 {
                     b.Property<Guid>("Id")
@@ -976,17 +927,6 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                         .HasForeignKey("AddressId");
 
                     b.Navigation("Address");
-                });
-
-            modelBuilder.Entity("Group03_Kindergarten_Suggestion_System_Project.Models.UserHistory", b =>
-                {
-                    b.HasOne("Group03_Kindergarten_Suggestion_System_Project.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Group03_Kindergarten_Suggestion_System_Project.Models.Ward", b =>
