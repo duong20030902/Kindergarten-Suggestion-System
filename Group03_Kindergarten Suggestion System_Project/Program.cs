@@ -37,17 +37,9 @@ builder.Services.AddIdentity<User, Role>()
     .AddEntityFrameworkStores<KindergartenSSDatabase>()
     .AddDefaultTokenProviders();
 
-// Cấu hình Session
-//builder.Services.AddSession(options =>
-//{
-//    options.IdleTimeout = TimeSpan.FromMinutes(30);
-//    options.Cookie.HttpOnly = true;
-//    options.Cookie.IsEssential = true;
-//});
-
 builder.Services.Configure<IdentityOptions>(options =>
 {
-    // Password settings.
+    // Password settings
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequireNonAlphanumeric = true;
@@ -55,40 +47,31 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredLength = 8;
     options.Password.RequiredUniqueChars = 1;
 
-    // Lockout settings.
+    // Lockout settings
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
     options.Lockout.MaxFailedAccessAttempts = 5;
     options.Lockout.AllowedForNewUsers = true;
 
-    // User settings.
+    // User settings
     options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
     options.User.RequireUniqueEmail = true;
 
     // Email confirmation requirement
-    options.SignIn.RequireConfirmedEmail = true;
+    options.SignIn.RequireConfirmedEmail = false; // Tắt yêu cầu chung để AuthController hoạt động
 });
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Authentication/Login";
-    options.LogoutPath = "/Auth/Logout";
+    options.LogoutPath = "/Authentication/Logout";
     options.AccessDeniedPath = "/Authentication/AccessDenied";
     options.ExpireTimeSpan = TimeSpan.FromDays(1);
     options.SlidingExpiration = true;
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
-    options.Events.OnValidatePrincipal = context =>
-    {
-        if (!context.Principal.Identity.IsAuthenticated)
-        {
-            context.RejectPrincipal();
-        }
-        return Task.CompletedTask;
-    };
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Chỉ gửi cookie qua HTTPS
-    options.Cookie.SameSite = SameSiteMode.Strict; // Ngăn CSRF
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Strict;
 
-    // Xóa cookie ngay khi đăng xuất
     options.Events = new CookieAuthenticationEvents
     {
         OnSigningOut = async context =>
@@ -99,7 +82,6 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddDistributedMemoryCache();
-
 builder.Services.AddTransient<EmailSender>();
 
 var app = builder.Build();
@@ -113,9 +95,6 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-
-// Kích hoạt Session
-//app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();

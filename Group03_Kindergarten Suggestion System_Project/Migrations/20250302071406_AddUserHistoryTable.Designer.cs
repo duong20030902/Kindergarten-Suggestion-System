@@ -4,6 +4,7 @@ using Group03_Kindergarten_Suggestion_System_Project.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
 {
     [DbContext(typeof(KindergartenSSDatabase))]
-    partial class KindergartenSSDatabaseModelSnapshot : ModelSnapshot
+    [Migration("20250302071406_AddUserHistoryTable")]
+    partial class AddUserHistoryTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

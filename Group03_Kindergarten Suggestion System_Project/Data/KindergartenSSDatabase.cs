@@ -25,6 +25,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Data
         public DbSet<Ward> Wards { get; set; }
         public DbSet<SchoolRating> SchoolRatings { get; set; }
         public DbSet<FAQ> FAQs { get; set; }
+        public DbSet<UserHistory> UserHistories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -106,6 +107,12 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Data
                 .HasOne(su => su.Utility)
                 .WithMany(u => u.SchoolUtilities)
                 .HasForeignKey(su => su.UtilityId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserHistory>()
+                .HasOne(uh => uh.User)
+                .WithMany()
+                .HasForeignKey(uh => uh.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

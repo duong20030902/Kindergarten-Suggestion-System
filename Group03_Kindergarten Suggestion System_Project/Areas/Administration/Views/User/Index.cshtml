@@ -4,6 +4,53 @@
     ViewData["Title"] = "User Management";
 }
 
+<style>
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 30px;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+        input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+</style>
+
 <div class="content-page">
     <div class="container-fluid">
         <div class="row">
@@ -25,15 +72,9 @@
                             <div class="row justify-content-between mb-3">
                                 <div class="col-sm-12">
                                     <div class="user-list-files d-flex">
-                                        <a href="#" class="bg-primary">
-                                            Print
-                                        </a>
-                                        <a asp-area="Administration" asp-action="ExportToExcel" asp-controller="User" class="bg-primary">
-                                            Excel
-                                        </a>
-                                        <a href="#" class="bg-primary">
-                                            Pdf
-                                        </a>
+                                        <a href="#" class="bg-primary" onclick="window.print()">Print</a>
+                                        <a asp-area="Administration" asp-action="ExportToExcel" asp-controller="User" class="bg-primary">Excel</a>
+                                        <a asp-area="Administration" asp-action="ExportToPdf" asp-controller="User" class="bg-primary">Pdf</a>
                                     </div>
                                 </div>
                             </div>
@@ -58,22 +99,27 @@
                                         <tr>
                                             <td class="text-center">
                                                 <img class="rounded img-fluid avatar-40"
-                                                     src="@(user.User.Image != null ? Url.Content($"~/img/users/{user.User.Image}")
-                                                        : Url.Content("~/assets/images/user/avatar-default.jpg"))"
+                                                     src="@(user.User.Image != null ? Url.Content($"~/img/users/{user.User.Image}") : Url.Content("~/assets/images/user/avatar-default.jpg"))"
                                                      alt="profile">
                                             </td>
                                             <td>@user.User.FirstName @user.User.LastName</td>
                                             <td>@user.User.UserName</td>
                                             <td>@user.User.Email</td>
                                             <td>
-                                                @if (user.User.EmailConfirmed)
-                                                {
-                                                    <span class="badge bg-primary">Active</span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="badge bg-warning">Inactive</span>
-                                                }
+                                                <div class="d-flex align-items-center">
+                                                    @if (user.User.EmailConfirmed)
+                                                    {
+                                                        <span class="badge bg-primary mr-2">Active</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-warning mr-2">Inactive</span>
+                                                    }
+                                                    <label class="switch">
+                                                        <input type="checkbox" class="status-toggle" data-id="@user.User.Id" @(user.User.EmailConfirmed ? "checked" : "")>
+                                                        <span class="slider"></span>
+                                                    </label>
+                                                </div>
                                             </td>
                                             <td>@user.User.CreatedAt.ToString("dd/MM/yyyy")</td>
                                             <td>@user.RoleName</td>
@@ -85,10 +131,10 @@
                                             </td>
                                             <td>
                                                 <div class="flex align-items-center list-user-action">
-                                                    <a class="btn btn-sm bg-primary" data-toggle="tooltip" data-placement="top" title="View" href="#">
+                                                    <a asp-area="Administration" asp-action="Detail" asp-route-id="@user.User.Id" class="btn btn-sm bg-primary" data-toggle="tooltip" data-placement="top" title="View">
                                                         <i class="ri-eye-line mr-0"></i>
                                                     </a>
-                                                    <a class="btn btn-sm bg-primary" data-toggle="tooltip" data-placement="top" title="Edit" href="#">
+                                                    <a asp-area="Administration" asp-action="EditUser" asp-route-id="@user.User.Id" class="btn btn-sm bg-primary" data-toggle="tooltip" data-placement="top" title="Edit">
                                                         <i class="ri-pencil-line mr-0"></i>
                                                     </a>
                                                 </div>
@@ -104,3 +150,60 @@
         </div>
     </div>
 </div>
+
+<form id="antiForgeryForm" method="post" style="display: none;">
+    @Html.AntiForgeryToken()
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.status-toggle').on('change', function () {
+                var userId = $(this).data('id');
+                var isChecked = $(this).is(':checked');
+                var token = $('#antiForgeryForm input[name="__RequestVerificationToken"]').val();
+
+                if (!userId) {
+                    alert('Invalid user ID.');
+                    $(this).prop('checked', !isChecked);
+                    return;
+                }
+
+                $.ajax({
+                    url: '@Url.Action("ToggleStatus", "User", new { area = "Administration" })',
+                    type: 'POST',
+                    data: { userId: userId, emailConfirmed: isChecked, __RequestVerificationToken: token },
+                    success: function (response) {
+                        if (response.success) {
+                            var badge = $(`input[data-id="${userId}"]`).closest('td').find('.badge');
+                            if (isChecked) {
+                                badge.removeClass('bg-warning').addClass('bg-primary').text('Active');
+                            } else {
+                                badge.removeClass('bg-primary').addClass('bg-warning').text('Inactive');
+                            }
+                        } else {
+                            alert('Failed to update status: ' + response.message);
+                            $(this).prop('checked', !isChecked); // Revert toggle on failure
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        var errorMessage = 'Error occurred while updating status.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message; // Lấy message từ JSON response
+                        } else if (xhr.statusText) {
+                            errorMessage = 'HTTP Error: ' + xhr.status + ' - ' + xhr.statusText;
+                        }
+                        console.error('ToggleStatus Error:', {
+                            status: status,
+                            error: error,
+                            response: xhr.responseText,
+                            message: errorMessage
+                        });
+                        alert(errorMessage);
+                        $(this).prop('checked', !isChecked); // Revert toggle on error
+                    }
+                });
+            });
+        });
+    </script>
+}

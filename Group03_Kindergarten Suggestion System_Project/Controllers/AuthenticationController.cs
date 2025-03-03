@@ -6,14 +6,10 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using System;
 using System.Web;
+using Microsoft.EntityFrameworkCore;
 
 namespace Group03_Kindergarten_Suggestion_System_Project.Controllers
 {
@@ -90,6 +86,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Controllers
                         Email = register.Email,
                         PhoneNumber = register.PhoneNumber,
                         BirthDate = register.BirthDate,
+                        RoleId = "65a83d1b-66b0-4871-98a6-bd50ab14052e",
                         EmailConfirmed = false
                     };
 
@@ -97,21 +94,21 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Controllers
 
                     if (result.Succeeded)
                     {
+                        await _userManager.AddToRoleAsync(user, "Parent"); 
                         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                         var encodedToken = HttpUtility.UrlEncode(token);
 
                         var confirmationLink = Url.Action("ConfirmEmail", "Authentication",
                             new { userId = user.Id, token = encodedToken }, Request.Scheme);
 
-                        // Tạo nội dung email
                         var emailBody = $@"
-        <h2>Xác nhận tài khoản của bạn</h2>
-        <p>Cảm ơn bạn đã đăng ký. Vui lòng click vào link bên dưới để xác nhận email của bạn:</p>
-        <p><a href='{confirmationLink}'>Xác nhận email</a></p>";
+                            <h2>Xác nhận tài khoản của bạn</h2>
+                            <p>Cảm ơn bạn đã đăng ký. Vui lòng click vào link bên dưới để xác nhận email của bạn:</p>
+                            <p><a href='{confirmationLink}'>Xác nhận email</a></p>";
 
                         _emailSender.SendEmail(user.Email, "Xác nhận tài khoản", emailBody);
 
-                        TempData["success"] = "Đăng ký thành công! Vui lòng kiểm tra email để xác nhận tài khoản.";
+                        TempData["success"] = "Registration successful! Please check your email to confirm your account.";
                         return RedirectToAction(nameof(Login));
                     }
 
@@ -125,8 +122,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Controllers
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error in Register: {ex.Message}");
-                TempData["error"] = "Có lỗi xảy ra trong quá trình đăng ký.";
+                TempData["error"] = $"An error occurred during registration: {ex.Message}";
                 return View(register);
             }
         }
@@ -145,35 +141,36 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginVm login)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(login.Email);
-                if (user != null)
-                {
-                    if (!user.EmailConfirmed)
-                    {
-                        ModelState.AddModelError("", "Please confirm the email before login.");
-                        return View(login);
-                    }
-
-                    var result = await _signInManager.PasswordSignInAsync(user.UserName, login.Password, login.RememberMe, lockoutOnFailure: true);
-
-                    if (result.Succeeded)
-                    {
-                        if (!string.IsNullOrEmpty(login.ReturnUrl) && Url.IsLocalUrl(login.ReturnUrl))
-                        {
-                            return Redirect(login.ReturnUrl);
-                        }
-                        return RedirectToAction("Index", "Home");
-                    }
-
-                    ModelState.AddModelError("", "Email hoặc mật khẩu không đúng.");
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Email hoặc mật khẩu không đúng.");
-                }
+                return View(login);
             }
+
+            var user = await _userManager.FindByEmailAsync(login.Email);
+            if (user == null)
+            {
+                ModelState.AddModelError(string.Empty, "Email does not exist.");
+                return View(login);
+            }
+
+            // Yêu cầu xác nhận email trước khi đăng nhập
+            if (!user.EmailConfirmed)
+            {
+                ModelState.AddModelError(string.Empty, "Please confirm email before logging in.");
+                return View(login);
+            }
+
+            var result = await _signInManager.PasswordSignInAsync(user.UserName, login.Password, login.RememberMe, lockoutOnFailure: true);
+            if (result.Succeeded)
+            {
+                if (!string.IsNullOrEmpty(login.ReturnUrl) && Url.IsLocalUrl(login.ReturnUrl))
+                {
+                    return Redirect(login.ReturnUrl);
+                }
+                return RedirectToAction("Index", "Home");
+            }
+
+            ModelState.AddModelError(string.Empty, "Incorrect email or password.");
             return View(login);
         }
 
@@ -195,7 +192,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Controllers
 
             if (user.EmailConfirmed)
             {
-                TempData["info"] = "Email đã được xác nhận trước đó.";
+                TempData["info"] = "Email has been previously confirmed.";
                 return RedirectToAction(nameof(Login));
             }
 
@@ -204,11 +201,11 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Controllers
 
             if (result.Succeeded)
             {
-                TempData["success"] = "Xác nhận email thành công! Bạn có thể đăng nhập ngay bây giờ.";
+                TempData["success"] = "Email confirmation successful! You can log in now.";
             }
             else
             {
-                TempData["error"] = "Xác nhận email thất bại. Vui lòng thử lại.";
+                TempData["error"] = "Email confirmation failed. Please try again.";
             }
 
             return RedirectToAction(nameof(Login));
@@ -231,23 +228,19 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Controllers
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null || user.IsDeleted)
             {
-                ModelState.AddModelError("", "Email không tồn tại trong hệ thống.");
+                ModelState.AddModelError("", "Email does not exist.");
                 return View(model);
             }
 
-            // Tạo mã OTP 6 chữ số
             var otp = new Random().Next(100000, 999999).ToString();
             var cacheKey = $"OTP_{model.Email}";
-
-            // Lưu OTP vào bộ nhớ cache với thời gian hiệu lực 5 phút
             _memoryCache.Set(cacheKey, otp, TimeSpan.FromMinutes(5));
 
-            // Gửi email chứa OTP
             string subject = "Your OTP Code";
             string body = $"Your OTP code is: <b>{otp}</b>. It is valid for 5 minutes.";
             _emailSender.SendEmail(model.Email, subject, body);
 
-            TempData["Success"] = "OTP đã được gửi đến email của bạn.";
+            TempData["Success"] = "OTP has been sent to your email.";
             return RedirectToAction("VerifyOtp", new { email = model.Email });
         }
 
@@ -257,7 +250,6 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Controllers
             return View(new VerifyOtpVm { Email = email });
         }
 
-        // Xác nhận OTP
         [HttpPost]
         public IActionResult VerifyOtp(VerifyOtpVm model)
         {
@@ -269,10 +261,9 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Controllers
             var cacheKey = $"OTP_{model.Email}";
             if (!_memoryCache.TryGetValue(cacheKey, out string otpStored) || otpStored != model.Otp)
             {
-                ModelState.AddModelError("", "OTP không hợp lệ hoặc đã hết hạn.");
+                ModelState.AddModelError("", "OTP invalid or expired.");
                 return View(model);
             }
-            // Nếu OTP hợp lệ, cho phép đặt lại mật khẩu
             _memoryCache.Remove(cacheKey);
             return RedirectToAction("ResetPassword", new { email = model.Email });
         }
@@ -300,7 +291,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Controllers
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
-                ModelState.AddModelError("", "Email không hợp lệ.");
+                ModelState.AddModelError("", "Email does not exist.");
                 return View(model);
             }
 
@@ -329,14 +320,10 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Controllers
                 return BadRequest(new { message = "Invalid request" });
             }
 
-            // Tạo OTP mới
             var otp = new Random().Next(100000, 999999).ToString();
             var cacheKey = $"OTP_{model.Email}";
-
-            // Lưu OTP vào bộ nhớ cache với thời gian hiệu lực 5 phút
             _memoryCache.Set(cacheKey, otp, TimeSpan.FromMinutes(5));
 
-            // Gửi lại email OTP
             string subject = "Your New OTP Code";
             string body = $"Your new OTP code is: {otp}. It is valid for 5 minutes.";
             _emailSender.SendEmail(model.Email, subject, body);
@@ -352,29 +339,19 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Controllers
                 var user = await _userManager.GetUserAsync(User);
                 if (user != null)
                 {
-                    // Update security stamp to invalidate all existing cookies
                     await _userManager.UpdateSecurityStampAsync(user);
-
-                    // Sign out from all schemes
                     await _signInManager.SignOutAsync();
-
-                    // Clear authentication cookie
                     await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-                    // Clear all cookies
                     foreach (var cookie in Request.Cookies.Keys)
                     {
                         Response.Cookies.Delete(cookie);
                     }
 
-                    // Clear TempData
                     TempData.Clear();
-
-                    // Clear Session if you're using it
                     HttpContext.Session.Clear();
                 }
 
-                // Return JSON if it's an AJAX request
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
                     return Json(new { success = true, redirectUrl = Url.Action("Index", "Home") });
@@ -384,9 +361,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Controllers
             }
             catch (Exception ex)
             {
-                // Log error
-                System.Diagnostics.Debug.WriteLine($"Error in Logout: {ex.Message}");
-                TempData["error"] = "Có lỗi xảy ra trong quá trình đăng xuất.";
+                TempData["error"] = $"An error occurred while logging out: {ex.Message}";
                 return RedirectToAction("Index", "Home");
             }
         }
