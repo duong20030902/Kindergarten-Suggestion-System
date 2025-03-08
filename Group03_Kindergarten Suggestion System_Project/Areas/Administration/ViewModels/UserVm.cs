@@ -7,6 +7,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.Vi
     public class UserVm
     {
         public string Id { get; set; }
+
         [Required]
         public string FirstName { get; set; }
 
@@ -20,7 +21,6 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.Vi
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
         public string RoleId { get; set; }
 
         [Phone]

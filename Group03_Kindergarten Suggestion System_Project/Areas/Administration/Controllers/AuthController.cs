@@ -1,5 +1,6 @@
 ﻿using Group03_Kindergarten_Suggestion_System_Project.Models;
 using Group03_Kindergarten_Suggestion_System_Project.ViewModels;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,6 +42,23 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.Co
                 return View(login);
             }
 
+            // Kiểm tra xem user có role không
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles == null || !roles.Any())
+            {
+                Console.WriteLine($"Tài khoản {login.Email} không có role nào được gán.");
+                ModelState.AddModelError(string.Empty, "Tài khoản của bạn không có vai trò nào được gán. Vui lòng liên hệ hỗ trợ.");
+                return View(login);
+            }
+
+            // Kiểm tra xem user có role "Parent" không
+            if (roles.Contains("Parent"))
+            {
+                Console.WriteLine($"Tài khoản {login.Email} có role Parent, không được phép đăng nhập ở đây.");
+                ModelState.AddModelError(string.Empty, "This login is not for Parents. Please use the Parent login page.");
+                return View(login);
+            }
+
             // Chỉ kiểm tra thời gian 7 ngày, không yêu cầu EmailConfirmed trước
             if (!user.EmailConfirmed && DateTime.UtcNow > user.CreatedAt.AddDays(7))
             {
@@ -49,10 +67,19 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.Co
                 return View(login);
             }
 
-            var result = await _signInManager.PasswordSignInAsync(user.UserName, login.Password, login.RememberMe, lockoutOnFailure: false);
+            // Kiểm tra mật khẩu
+            var result = await _signInManager.CheckPasswordSignInAsync(user, login.Password, lockoutOnFailure: false);
             if (result.Succeeded)
             {
-                Console.WriteLine($"Đăng nhập thành công cho {login.Email}");
+                // Đăng nhập với scheme mặc định (sẽ sử dụng AdminAuth dựa trên LoginPath)
+                await _signInManager.SignInAsync(user, new AuthenticationProperties
+                {
+                    IsPersistent = login.RememberMe,
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddDays(1) // Tùy chỉnh thời gian hết hạn
+                });
+
+                Console.WriteLine($"Đăng nhập thành công cho {login.Email} với scheme AdminAuth");
+
                 if (!user.EmailConfirmed && DateTime.UtcNow <= user.CreatedAt.AddDays(7))
                 {
                     user.EmailConfirmed = true;
@@ -76,6 +103,13 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.Co
         public IActionResult ResetPassword()
         {
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            Console.WriteLine("You do not have permission to access this page."); 
+            return RedirectToAction("Index", "Home", new { area = "Administration" });
         }
     }
 }

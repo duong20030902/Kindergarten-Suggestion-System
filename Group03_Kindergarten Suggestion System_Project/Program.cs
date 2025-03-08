@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Thêm DbContext
 builder.Services.AddDbContext<KindergartenSSDatabase>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SQLConnect"),
         sqlServerOptionsAction: sqlOptions =>
@@ -19,25 +20,58 @@ builder.Services.AddDbContext<KindergartenSSDatabase>(options =>
         })
     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
+// Thêm Controllers với Views
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-})
-.AddCookie(options =>
-{
-    options.LoginPath = "/Authentication/Login";
-    options.LogoutPath = "/Authentication/Logout";
-});
+// Cấu hình xác thực với hai scheme: ParentAuth và AdminAuth
+builder.Services.AddAuthentication(
+    options =>
+    {
+        options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    })
+    .AddCookie("ParentAuth", options =>
+    {
+        options.LoginPath = "/Authentication/Login";
+        options.LogoutPath = "/Authentication/Logout";
+        options.AccessDeniedPath = "/Authentication/AccessDenied";
+        options.ExpireTimeSpan = TimeSpan.FromDays(1);
+        options.SlidingExpiration = true;
+        options.Cookie.HttpOnly = true;
+        options.Cookie.IsEssential = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Cookie.SameSite = SameSiteMode.Strict;
+        options.Events = new CookieAuthenticationEvents
+        {
+            OnSigningOut = async context =>
+            {
+                context.CookieOptions.Expires = DateTime.Now.AddDays(-1);
+            }
+        };
+    })
+    .AddCookie("AdminAuth", options =>
+    {
+        options.LoginPath = "/Administration/Auth/Login";
+        options.LogoutPath = "/Administration/Auth/Logout";
+        options.AccessDeniedPath = "/Authentication/Auth/AccessDenied";
+        options.ExpireTimeSpan = TimeSpan.FromDays(1);
+        options.SlidingExpiration = true;
+        options.Cookie.HttpOnly = true;
+        options.Cookie.IsEssential = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Cookie.SameSite = SameSiteMode.Strict;
+        options.Events = new CookieAuthenticationEvents
+        {
+            OnSigningOut = async context =>
+            {
+                context.CookieOptions.Expires = DateTime.Now.AddDays(-1);
+            }
+        };
+    });
 
-builder.Services.AddIdentity<User, Role>()
-    .AddEntityFrameworkStores<KindergartenSSDatabase>()
-    .AddDefaultTokenProviders();
-
-builder.Services.Configure<IdentityOptions>(options =>
+// Cấu hình Identity
+builder.Services.AddIdentity<User, Role>(options =>
 {
     // Password settings
     options.Password.RequireDigit = true;
@@ -58,34 +92,17 @@ builder.Services.Configure<IdentityOptions>(options =>
 
     // Email confirmation requirement
     options.SignIn.RequireConfirmedEmail = false; // Tắt yêu cầu chung để AuthController hoạt động
-});
+})
+    .AddEntityFrameworkStores<KindergartenSSDatabase>()
+    .AddDefaultTokenProviders();
 
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.LoginPath = "/Authentication/Login";
-    options.LogoutPath = "/Authentication/Logout";
-    options.AccessDeniedPath = "/Authentication/AccessDenied";
-    options.ExpireTimeSpan = TimeSpan.FromDays(1);
-    options.SlidingExpiration = true;
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    options.Cookie.SameSite = SameSiteMode.Strict;
-
-    options.Events = new CookieAuthenticationEvents
-    {
-        OnSigningOut = async context =>
-        {
-            context.CookieOptions.Expires = DateTime.Now.AddDays(-1);
-        }
-    };
-});
-
+// Thêm các dịch vụ khác
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddTransient<EmailSender>();
 
 var app = builder.Build();
 
+// Middleware pipeline
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
