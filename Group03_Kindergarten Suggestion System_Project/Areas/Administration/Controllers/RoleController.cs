@@ -49,7 +49,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.Co
                     {
                         var role = new Role(model.Name)
                         {
-                            IsActive = true // Mặc định luôn active
+                            IsActive = true 
                         };
                         var result = await _roleManager.CreateAsync(role);
                         if (result.Succeeded)
@@ -107,7 +107,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.Co
                     return RedirectToAction("Index");
                 }
 
-                role.Name = model.Name; // Chỉ cập nhật Name, không thay đổi IsActive
+                role.Name = model.Name; 
                 var result = await _roleManager.UpdateAsync(role);
                 if (result.Succeeded)
                 {

@@ -385,7 +385,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.Co
                     PhoneNumber = user.PhoneNumber ?? "N/A",
                     BirthDate = user.BirthDate,
                     EmailConfirmed = user.EmailConfirmed,
-                    RoleId = user.RoleId,
+                    RoleId = user.RoleId, // Có thể là NULL, không gây lỗi vì bảng đã cho phép NULL
                     UpdatedAt = user.UpdatedAt ?? DateTime.Now // Nếu chưa có UpdatedAt, dùng giờ hiện tại
                 };
                 _context.UserHistories.Add(userHistory);
@@ -464,7 +464,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.Co
                         }
                     }
 
-                    user.RoleId = userVm.RoleId;
+                    user.RoleId = userVm.RoleId; // Cập nhật RoleId trong AspNetUsers
                 }
 
                 var result = await _userManager.UpdateAsync(user);

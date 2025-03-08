@@ -25,7 +25,6 @@
                             <tr class="ligth ligth-data text-center">
                                 <th class="align-middle">#</th>
                                 <th class="align-middle">Name</th>
-                                <th class="align-middle">Action</th>
                             </tr>
                         </thead>
                         <tbody class="ligth-body text-center">
@@ -47,7 +46,7 @@
                                             <div class="badge badge-warning">@role.Name</div>
                                         }
                                     </td>
-                                    <td class="align-middle">
+                                    @* <td class="align-middle">
                                         @if (role.Name != "Admin")
                                         {
                                             <div class="d-flex align-items-center list-action">
@@ -57,7 +56,7 @@
                                                 </a>
                                             </div>
                                         }
-                                    </td>
+                                    </td> *@
                                 </tr>
                             }
                         </tbody>
@@ -143,41 +142,41 @@
         @if (TempData["success"] != null)
         {
             <text>
-                        Swal.fire({
-                            title: 'Success!',
-                            text: '@TempData["success"]',
-                            icon: 'success',
-                            confirmButtonText: 'OK'
-                        });
+                                Swal.fire({
+                                    title: 'Success!',
+                                    text: '@TempData["success"]',
+                                    icon: 'success',
+                                    confirmButtonText: 'OK'
+                                });
             </text>
         }
 
         @if (TempData["warning"] != null)
         {
             <text>
-                        Swal.fire({
-                            title: 'Warning!',
-                            text: '@TempData["warning"]',
-                            icon: 'warning',
-                            confirmButtonText: 'OK'
-                        });
+                                Swal.fire({
+                                    title: 'Warning!',
+                                    text: '@TempData["warning"]',
+                                    icon: 'warning',
+                                    confirmButtonText: 'OK'
+                                });
             </text>
         }
 
         @if (TempData["error"] != null)
         {
             <text>
-                        Swal.fire({
-                            title: 'Error!',
-                            text: '@TempData["error"]',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: '@TempData["error"]',
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                });
             </text>
         }
         });
 
-        function editRole(id, name) { 
+        function editRole(id, name) {
             document.getElementById("editRoleId").value = id;
             document.getElementById("editRoleName").value = name;
             document.getElementById("modalRoleName").textContent = name;
