@@ -18,7 +18,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Models
         public string PhoneNumber { get; set; }
         public DateTime BirthDate { get; set; }
         public bool EmailConfirmed { get; set; }
-        public string RoleId { get; set; }
+        public string? RoleId { get; set; }
         public DateTime UpdatedAt { get; set; } 
 
         [ForeignKey("UserId")]

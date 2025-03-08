@@ -39,13 +39,17 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.Co
         }
 
         [HttpGet]
-        public async Task<IActionResult> EditProfile(string userId)
+        public async Task<IActionResult> EditProfile(string Id)
         {
             var currentUser = await _userManager.GetUserAsync(User);
-            if (currentUser == null || currentUser.Id != userId)
+            if (currentUser == null || currentUser.Id != Id)
             {
                 return Forbid(); // Không cho phép truy cập profile của người khác
             }
+
+            // Get user's role name, don't try to get role ID
+            var roles = await _userManager.GetRolesAsync(currentUser);
+            var roleName = roles.FirstOrDefault();
 
             var userVm = new UserVm
             {
@@ -58,24 +62,36 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.Co
                 BirthDate = currentUser.BirthDate,
                 EmailConfirmed = currentUser.EmailConfirmed,
                 Image = currentUser.Image,
-                RoleId = currentUser.RoleId
+                RoleId = roleName ?? string.Empty
             };
 
+            ViewBag.UserRoleId = roleName ?? string.Empty;
             return View(userVm);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditProfile(string userId, UserVm userVm)
+        public async Task<IActionResult> EditProfile(string Id, UserVm userVm)
         {
             var currentUser = await _userManager.GetUserAsync(User);
-            if (currentUser == null || currentUser.Id != userId)
+            if (currentUser == null || currentUser.Id != Id)
             {
                 return Forbid(); // Không cho phép chỉnh sửa profile của người khác
+            }
+            // If RoleId is null or empty, try to get role name again
+            if (string.IsNullOrEmpty(userVm.RoleId))
+            {
+                var roles = await _userManager.GetRolesAsync(currentUser);
+                userVm.RoleId = roles.FirstOrDefault() ?? string.Empty;
             }
 
             if (!ModelState.IsValid)
             {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                foreach (var error in errors)
+                {
+                    Console.WriteLine(error);
+                }
                 return View(userVm);
             }
 

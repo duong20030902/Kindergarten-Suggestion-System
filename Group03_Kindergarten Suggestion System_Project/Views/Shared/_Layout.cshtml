@@ -37,6 +37,7 @@
                     <a asp-controller="Blog" asp-action="Index" class="nav-item nav-link @Html.IsActive("Blog", "Index")">Blog</a>
                     <a asp-controller="Contact" asp-action="Index" class="nav-item nav-link @Html.IsActive("Contact", "Index")">Contact</a>
                 </div>
+                @using System.Security.Claims
                 @if (User.Identity?.IsAuthenticated ?? false)
                 {
                     <div class="d-flex align-items-center">
