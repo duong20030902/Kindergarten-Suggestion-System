@@ -1,46 +1,97 @@
-﻿@{
-    ViewData["Title"] = "Chỉnh Sửa Hồ Sơ";
+﻿@using Group03_Kindergarten_Suggestion_System_Project.ViewModels
+@model UserProfileVm
+@{
+    ViewData["Title"] = @Model.FirstName + " " + @Model.LastName;
 }
 
 <div class="container-fluid pt-5">
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 mx-auto">
+            <div class="col-lg-10 mx-auto">
                 <div class="card border-primary">
                     <div class="card-header bg-primary text-white">
                         <h3 class="mb-0">
                             <i class="fa fa-user-edit mr-2"></i>Chỉnh Sửa Hồ Sơ
                         </h3>
                     </div>
-                    <form>
+                    <form asp-area="" asp-controller="Profile" asp-action="EditProfile" method="post" enctype="multipart/form-data">
+                        <input type="hidden" asp-for="Id" />
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-4 text-center mb-4">
-                                    <img src="~/img/default-avatar.jpg" class="img-fluid rounded-circle mb-3"
+                                    <img id="profileImage" src="~/img/users/@Model.Image" class="img-fluid rounded-circle mb-3"
                                          alt="Profile Picture" style="max-width: 200px;">
                                     <div>
                                         <label class="btn btn-primary">
-                                            <i class="fa fa-upload mr-2"></i>Tải Ảnh Mới
-                                            <input type="file" class="d-none">
+                                            <i class="fa fa-upload mr-2"></i>Upload New Photos
+                                            <input type="file" class="d-none" asp-for="ImageFile" accept="image/*" onchange="previewImage(event)">
                                         </label>
                                     </div>
                                 </div>
                                 <div class="col-md-8">
-                                    <div class="form-group">
-                                        <label class="text-primary">Họ và Tên</label>
-                                        <input type="text" class="form-control" value="Nguyễn Văn A">
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label class="text-primary">First Name</label>
+                                            <input asp-for="FirstName" type="text" class="form-control" required />
+                                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="text-primary">Last Name</label>
+                                            <input asp-for="LastName" type="text" class="form-control" required />
+                                            <span asp-validation-for="LastName" class="text-danger"></span>
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="text-primary">Email</label>
-                                        <input type="email" class="form-control" value="nguyenvana@example.com">
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label class="text-primary">UserName</label>
+                                            <input asp-for="UserName" type="text" class="form-control" required />
+                                            <span asp-validation-for="UserName" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="text-primary">Email</label>
+                                            <input asp-for="Email" type="email" class="form-control" readonly />
+                                            <span asp-validation-for="Email" class="text-danger"></span>
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="text-primary">Số Điện Thoại</label>
-                                        <input type="tel" class="form-control" value="0888 686 999">
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label class="text-primary">Phone Number</label>
+                                            <input asp-for="PhoneNumber" type="tel" class="form-control" required />
+                                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="text-primary">Date Of Birth</label>
+                                            <input asp-for="BirthDate" type="date" class="form-control" required />
+                                            <span asp-validation-for="BirthDate" class="text-danger"></span>
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="text-primary">Địa Chỉ</label>
-                                        <textarea class="form-control" rows="3">Hà Nội, Việt Nam</textarea>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <label class="text-primary">Province</label>
+                                            <select asp-for="ProvinceId" asp-items="ViewBag.Provinces" class="selectpicker form-control" data-style="py-0" onchange="updateDistricts()">
+                                                <option value="">Select Province</option>
+                                            </select>
+                                            <span asp-validation-for="ProvinceId" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="text-primary">District</label>
+                                            <select asp-for="DistrictId" asp-items="ViewBag.Districts" class="selectpicker form-control" data-style="py-0" onchange="updateWards()">
+                                                <option value="">Select District</option>
+                                            </select>
+                                            <span asp-validation-for="DistrictId" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="text-primary">Ward</label>
+                                            <select asp-for="WardId" asp-items="ViewBag.Wards" class="selectpicker form-control" data-style="py-0">
+                                                <option value="">Select Ward</option>
+                                            </select>
+                                            <span asp-validation-for="WardId" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="text-primary">Address Detail</label>
+                                        <input asp-for="AddressDetail" class="form-control" placeholder="Số nhà, tên đường, ..." />
+                                        <span asp-validation-for="AddressDetail" class="text-danger"></span>
                                     </div>
                                 </div>
                             </div>
@@ -49,12 +100,12 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <button type="submit" class="btn btn-primary btn-block">
-                                        <i class="fa fa-save mr-2"></i>Lưu Thay Đổi
+                                        <i class="fa fa-save mr-2"></i>Save Changes
                                     </button>
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="#" class="btn btn-outline-primary btn-block">
-                                        <i class="fa fa-times mr-2"></i>Hủy
+                                    <a asp-area="" asp-controller="Profile" asp-action="Index" class="btn btn-outline-primary btn-block">
+                                        <i class="fa fa-times mr-2"></i>Cancel
                                     </a>
                                 </div>
                             </div>
@@ -65,3 +116,86 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function() {
+            $('.selectpicker').selectpicker(); // Khởi tạo selectpicker khi trang được tải
+        });
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('profileImage');
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Cập nhật danh sách District khi thay đổi Province
+        function updateDistricts() {
+            var provinceId = document.getElementById("ProvinceId").value;
+            if (provinceId) {
+                fetch(`/Profile/GetDistricts?provinceId=${provinceId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        var districtDropdown = document.getElementById("DistrictId");
+                        districtDropdown.innerHTML = '<option value="">Select District</option>';
+                        data.forEach(district => {
+                            districtDropdown.innerHTML += `<option value="${district.id}">${district.name}</option>`;
+                        });
+                        $(districtDropdown).selectpicker('refresh'); // Làm mới selectpicker
+                        updateWards(); // Cập nhật lại Ward
+                    })
+                    .catch(error => {
+                        console.error('Error fetching districts:', error);
+                    });
+            } else {
+                var districtDropdown = document.getElementById("DistrictId");
+                districtDropdown.innerHTML = '<option value="">Select District</option>';
+                $(districtDropdown).selectpicker('refresh');
+                updateWards();
+            }
+        }
+
+        // Cập nhật danh sách Ward khi thay đổi District
+        function updateWards() {
+            var districtId = document.getElementById("DistrictId").value;
+            if (districtId) {
+                fetch(`/Profile/GetWards?districtId=${districtId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        var wardDropdown = document.getElementById("WardId");
+                        wardDropdown.innerHTML = '<option value="">Select Ward</option>';
+                        data.forEach(ward => {
+                            wardDropdown.innerHTML += `<option value="${ward.id}">${ward.name}</option>`;
+                        });
+                        $(wardDropdown).selectpicker('refresh'); // Làm mới selectpicker
+                    })
+                    .catch(error => {
+                        console.error('Error fetching wards:', error);
+                    });
+            } else {
+                var wardDropdown = document.getElementById("WardId");
+                wardDropdown.innerHTML = '<option value="">Select Ward</option>';
+                $(wardDropdown).selectpicker('refresh');
+            }
+        }
+    </script>
+}

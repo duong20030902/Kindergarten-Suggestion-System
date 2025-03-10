@@ -5,6 +5,7 @@
         Pending,
         Cancelled,
         Enroll,
-        UnEnroll
+        Processing
+        //UnEnroll
     }
 }

@@ -1,0 +1,46 @@
+﻿@{
+    ViewData["Title"] = "Send Application to" + " " + @ViewData["SchoolName"];
+}
+
+<div class="container-fluid pt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">
+                            <i class="fa fa-calendar-check mr-2"></i>Send Application(Gửi đơn) - đến @ViewData["SchoolName"]
+                        </h3>
+                    </div>
+                    <form asp-action="SubmitRequest" asp-controller="Parent" method="post">
+                        <div class="card-body">
+                            <input type="hidden" name="schoolId" value="@ViewData["SchoolId"]" />
+                            <div class="form-group">
+                                <label class="text-primary">Lý do</label>
+                                <textarea class="form-control" name="description" rows="3" placeholder="Nhập lý do" required></textarea>
+                            </div>
+                            <div class="alert alert-info">
+                                <i class="fa fa-info-circle mr-2"></i>
+                                Phụ huynh vui lòng kiểm tra lại trước khi gửi.
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-primary btn-block">
+                                        <i class="fa fa-paper-plane mr-2"></i>Gửi Đăng Ký
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button type="reset" class="btn btn-outline-primary btn-block">
+                                        <i class="fa fa-redo mr-2"></i>Nhập Lại
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

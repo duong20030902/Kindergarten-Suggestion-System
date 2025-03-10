@@ -1,0 +1,47 @@
+﻿@model Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.ViewModels.UntilityVm
+
+@{
+    ViewData["Title"] = "Untility Create";
+}
+
+
+
+<div class="content-page">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <div class="header-title">
+                            <h4 class="card-title"></h4>
+                        </div>
+                        <div class="header-title">
+                            <a asp-action="Create" class="btn btn-outline-primary border add-btn shadow-none mx-2 d-none d-md-block">
+                                <i class="las la-plus mr-2"></i>Create New Untility
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+
+                            <table id="school-list-table" class="data-tables table table-striped dataTable mt-4">
+                                <form asp-action="Create" method="Post">
+                                    <label asp-for="Name" class="form-label">Untility</label>
+                                    <input asp-for="Name" class="form-control" />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+
+                                    <div class="text-center mt-4">
+                                        <button type="submit" class="btn btn-success px-4">Create</button>
+                                        <a asp-action="Index" class="btn btn-secondary px-4">Cancel</a>
+                                    </div>
+                                </form>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -2,6 +2,7 @@
 using Group03_Kindergarten_Suggestion_System_Project.Data;
 using Group03_Kindergarten_Suggestion_System_Project.Models;
 using Group03_Kindergarten_Suggestion_System_Project.Services.Email;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.Controllers
 {
     [Area("Administration")]
+    [Authorize(Roles = "Admin")]
     public class RoleController : Controller
     {
         private readonly KindergartenSSDatabase _context;

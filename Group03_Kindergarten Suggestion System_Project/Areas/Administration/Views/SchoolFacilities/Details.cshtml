@@ -1,0 +1,97 @@
+﻿@model Group03_Kindergarten_Suggestion_System_Project.Models.School
+
+@{
+    ViewData["Title"] = "Chi tiết trường học";
+}
+
+<div class="content-page">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <div class="header-title">
+                            <h4 class="card-title">Chi tiết trường: @Model.Name</h4>
+                        </div>
+                        <div class="header-title">
+                            <a asp-action="Index" class="btn btn-outline-secondary border shadow-none mx-2 d-none d-md-block">
+                                <i class="ri-arrow-left-line"></i> Quay lại danh sách
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+
+                        <!-- Thông báo lỗi hoặc thành công -->
+                        @if (TempData["Success"] != null)
+                        {
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                @TempData["Success"]
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        }
+                        @if (TempData["Error"] != null)
+                        {
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                @TempData["Error"]
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        }
+
+                        <h4 class="mb-3">Cơ sở vật chất</h4>
+                        <div class="table-responsive">
+                            <table id="utilities-list-table" class="data-tables table table-striped dataTable">
+                                <thead>
+                                    <tr class="ligth">
+                                        <th>Tên tiện ích</th>
+                                        <th>Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var schoolUtility in Model.SchoolFacilities)
+                                    {
+                                        <tr>
+                                            <td>@schoolUtility.Facility.Name</td>
+                                            <td>
+                                                <form asp-action="RemoveUtility" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa tiện ích này?');">
+                                                    <input type="hidden" name="schoolId" value="@Model.Id" />
+                                                    <input type="hidden" name="utilityId" value="@schoolUtility.Facility.Id" />
+                                                    <button type="submit" class="btn btn-danger btn-sm">
+                                                        <i class="ri-delete-bin-line"></i> Xóa
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h4 class="mt-4">Thêm cơ sở vật chất</h4>
+                        <form asp-action="AddUtility" method="post">
+                            <input type="hidden" name="schoolId" value="@Model.Id" />
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <select name="utilityId" class="form-control">
+                                        @foreach (var utility in ViewBag.Utilities)
+                                        {
+                                            <option value="@utility.Id">@utility.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="submit" class="btn btn-success w-100">
+                                        <i class="ri-add-line"></i> Thêm
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <a asp-action="Index" class="btn btn-secondary mt-4">
+                            <i class="ri-arrow-left-line"></i> Quay lại danh sách
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

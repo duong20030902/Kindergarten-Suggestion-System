@@ -361,7 +361,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("EnrolledDate")
+                    b.Property<DateTime?>("EnrolledDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ParentId")

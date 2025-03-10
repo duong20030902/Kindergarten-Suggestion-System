@@ -1,0 +1,38 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.ViewModels.FacilityVm
+
+@{
+    ViewData["Title"] = "Edit Facility";
+}
+
+<div class="content-page">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h4 class="card-title">Edit Facility</h4>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="Edit" method="post">
+                            <input type="hidden" asp-for="Id" />
+                            <div class="form-group">
+                                <label asp-for="Name" class="control-label"></label>
+                                <input asp-for="Name" class="form-control" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
