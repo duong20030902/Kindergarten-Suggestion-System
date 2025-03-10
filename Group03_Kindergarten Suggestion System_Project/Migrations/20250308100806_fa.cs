@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
 {
     /// <inheritdoc />
-    public partial class IntializeDB : Migration
+    public partial class fa : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -131,7 +131,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -265,7 +265,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -285,7 +285,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -303,13 +303,13 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -329,7 +329,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -354,6 +354,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                     SchoolTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     AcceptorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ShoolOwnerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     TotalRatingCount = table.Column<long>(type: "bigint", nullable: false),
                     TotalRating = table.Column<long>(type: "bigint", nullable: false)
                 },
@@ -379,23 +380,57 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
+                        name: "FK_Schools_AspNetUsers_ShoolOwnerId",
+                        column: x => x.ShoolOwnerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
                         name: "FK_Schools_ChildAges_ChildAgeId",
                         column: x => x.ChildAgeId,
                         principalTable: "ChildAges",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Schools_EducationMethods_EducationMethodId",
                         column: x => x.EducationMethodId,
                         principalTable: "EducationMethods",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Schools_SchoolTypes_SchoolTypeId",
                         column: x => x.SchoolTypeId,
                         principalTable: "SchoolTypes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserHistories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    RoleId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserHistories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserHistories_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -421,13 +456,13 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                         column: x => x.ParentId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_CounsellingRequests_Schools_SchoolId",
                         column: x => x.SchoolId,
                         principalTable: "Schools",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -457,6 +492,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
+                    Desctiption = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SchoolId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ParentId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
@@ -468,13 +504,13 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                         column: x => x.ParentId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_SchoolEnrollments_Schools_SchoolId",
                         column: x => x.SchoolId,
                         principalTable: "Schools",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -492,13 +528,13 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                         column: x => x.FacilityId,
                         principalTable: "Facilities",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_SchoolFacilities_Schools_SchoolId",
                         column: x => x.SchoolId,
                         principalTable: "Schools",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -524,13 +560,13 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                         column: x => x.ParentId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_SchoolRatings_Schools_SchoolId",
                         column: x => x.SchoolId,
                         principalTable: "Schools",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -548,13 +584,13 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                         column: x => x.SchoolId,
                         principalTable: "Schools",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_SchoolUtilities_Utilities_UtilityId",
                         column: x => x.UtilityId,
                         principalTable: "Utilities",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateIndex(
@@ -692,9 +728,19 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                 column: "SchoolTypeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Schools_ShoolOwnerId",
+                table: "Schools",
+                column: "ShoolOwnerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SchoolUtilities_UtilityId",
                 table: "SchoolUtilities",
                 column: "UtilityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserHistories_UserId",
+                table: "UserHistories",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Wards_DistrictId",
@@ -740,6 +786,9 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
 
             migrationBuilder.DropTable(
                 name: "SchoolUtilities");
+
+            migrationBuilder.DropTable(
+                name: "UserHistories");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
