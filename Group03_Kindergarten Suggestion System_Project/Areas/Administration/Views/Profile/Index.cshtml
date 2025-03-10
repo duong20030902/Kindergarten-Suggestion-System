@@ -20,7 +20,22 @@
                             <p class="mb-2">@Model.User.UserName</p>
                         </div>
                         <div class="d-flex justify-content-center">
-                            <a asp-area="Administration" asp-controller="Profile" asp-action="EditProfile" asp-route-userId="@Model.User.Id" class="btn btn-primary font-size-14 mr-2">Update</a>
+                            @{
+                                bool isProfileComplete = !string.IsNullOrEmpty(Model.User.FirstName) &&
+                                !string.IsNullOrEmpty(Model.User.LastName) &&
+                                !string.IsNullOrEmpty(Model.User.UserName) &&
+                                !string.IsNullOrEmpty(Model.User.Email) &&
+                                !string.IsNullOrEmpty(Model.User.PhoneNumber) &&
+                                Model.User.BirthDate != DateTime.MinValue &&
+                                Model.User.Address != null &&
+                                !string.IsNullOrEmpty(Model.User.Address.Detail) &&
+                                Model.User.Address.Province != null &&
+                                Model.User.Address.District != null &&
+                                Model.User.Address.Ward != null;
+                            }
+                            <a asp-area="Administration" asp-controller="Profile" asp-action="EditProfile" asp-route-Id="@Model.User.Id" class="btn btn-primary font-size-14 mr-2">
+                                @(isProfileComplete ? "Edit" : "Update")
+                            </a>
                             <a asp-area="Administration" asp-controller="Profile" asp-action="ChangePassword" class="btn btn-outline-secondary font-size-14">Change Password</a>
                         </div>
                     </div>
@@ -83,15 +98,6 @@
                                                             <h6>@Model.RoleName</h6>
                                                         </div>
                                                     </li>
-                                                    <li class="mb-2">
-                                                        <div class="d-flex align-items-center">
-                                                            <svg class="svg-icon mr-3" height="16" width="16" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                            </svg>
-                                                            @* <p class="mb-0">@(Model.Address != null ? Model.Address.ToString() : "Not provided")</p> *@
-                                                        </div>
-                                                    </li>
                                                     <li>
                                                         <div class="d-flex align-items-center justify-content-between">
                                                             <div class="d-flex align-items-center">
@@ -101,6 +107,27 @@
                                                                 <p class="mb-0">Birth</p>
                                                             </div>
                                                             <h6>@Model.User.BirthDate.ToString("MMMM d, yyyy")</h6>
+                                                        </div>
+                                                    </li>
+                                                    <li class="mb-2">
+                                                        <div class="d-flex align-items-start justify-content-between">
+                                                            <div class="d-flex align-items-center" style="min-width: 80px;">
+                                                                <svg class="svg-icon mr-3" height="16" width="16" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                                </svg>
+                                                                <p class="mb-0">Address</p>
+                                                            </div>
+                                                            <h6 style="max-width: 60%; text-align: right; word-wrap: break-word;">
+                                                                @if (Model.User.Address != null)
+                                                                {
+                                                                    @($"{Model.User.Address.Detail}, {Model.User.Address.Ward.Name}, {Model.User.Address.District.Name}, {Model.User.Address.Province.Name}")
+                                                                }
+                                                                else
+                                                                {
+                                                                    @:N/A
+                                                                }
+                                                            </h6>
                                                         </div>
                                                     </li>
                                                 </ul>

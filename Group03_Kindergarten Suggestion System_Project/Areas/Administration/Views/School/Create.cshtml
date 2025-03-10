@@ -1,0 +1,284 @@
+﻿@model Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.ViewModels.SchoolVM
+
+@{
+    ViewData["Title"] = "Create School";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Create New School</h2>
+
+    <form asp-action="Create" method="post">
+        <div class="row">
+           
+            <div class="col-md-6">
+                <div class="card shadow-sm p-4">
+                    <h5 class="mb-3">School Create</h5>
+
+                    <div class="mb-3">
+                        <label asp-for="SchoolCode" class="form-label">School Code</label>
+                        <input asp-for="SchoolCode" class="form-control" />
+                        <span asp-validation-for="SchoolCode" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">School Name</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="FeeFrom" class="form-label">Fee From</label>
+                        <input asp-for="FeeFrom" class="form-control" type="number" />
+                        <span asp-validation-for="FeeFrom" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="FeeTo" class="form-label">Fee To</label>
+                        <input asp-for="FeeTo" class="form-control" type="number" />
+                        <span asp-validation-for="FeeTo" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Phone" class="form-label">Phone</label>
+                        <input asp-for="Phone" class="form-control" />
+                        <span asp-validation-for="Phone" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">Email</label>
+                        <input asp-for="Email" type="email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Description</label>
+                        <textarea asp-for="Description" class="form-control"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Address and IDs -->
+            <div class="col-md-6">
+                <div class="card shadow-sm p-4">
+                    <h5 class="mb-3">Address & Ownership</h5>
+
+                    <div class="mb-3">
+                        <label asp-for="Address.ProvinceId" class="form-label">Province</label>
+                        <select asp-for="Address.ProvinceId" class="form-select" id="provinceSelect" asp-items="ViewBag.Provinces">
+                            <option value="">-- Select Province --</option>
+                        </select>
+                        <span asp-validation-for="Address.ProvinceId" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Address.DistrictId" class="form-label">District</label>
+                        <select asp-for="Address.DistrictId" class="form-select" id="districtSelect" asp-items="ViewBag.Districts">
+                            <option value="">-- Select District --</option>
+                        </select>
+                        <span asp-validation-for="Address.DistrictId" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Address.WardId" class="form-label">Ward</label>
+                        <select asp-for="Address.WardId" class="form-select" id="wardSelect" asp-items="ViewBag.Wards">
+                            <option value="">-- Select Ward --</option>
+                        </select>
+                        <span asp-validation-for="Address.WardId" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Address.Detail" class="form-label">Address Detail</label>
+                        <input asp-for="Address.Detail" class="form-control" />
+                        <span asp-validation-for="Address.Detail" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ChildAgeId" class="form-label"></label>
+                        <select asp-for="ChildAgeId" class="form-select" asp-items="ViewBag.ChildAges">
+                            <option value="">-- Select Child Age --</option>
+                        </select>
+                        <span asp-validation-for="ChildAgeId" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="EducationMethodId" class="form-label"></label>
+                        <select asp-for="EducationMethodId" class="form-select" asp-items="ViewBag.EducationMethods">
+                            <option value="">-- Select Method --</option>
+                        </select>
+                        <span asp-validation-for="EducationMethodId" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="SchoolTypeId" class="form-label"></label>
+                        <select asp-for="SchoolTypeId" class="form-select" asp-items="ViewBag.SchoolTypes">
+                            <option value="">-- Select Type --</option>
+                        </select>
+                        <span asp-validation-for="SchoolTypeId" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="SchoolOwnerId" class="form-label"></label>
+                        <select asp-for="SchoolOwnerId" class="form-select" asp-items="ViewBag.SchoolOwners">
+                            <option value="">-- Select Type --</option>
+                        </select>
+                        <span asp-validation-for="SchoolTypeId" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label asp-for="CreatorId" class="form-label"></label>
+                        <select asp-for="CreatorId" class="form-select" asp-items="ViewBag.Creator">
+                            <option value="">-- Select Type --</option>
+                        </select>
+                        <span asp-validation-for="SchoolTypeId" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="AcceptorId" class="form-label"></label>
+                        <select asp-for="AcceptorId" class="form-select" asp-items="ViewBag.Acceptor">
+                            <option value="">-- Select Type --</option>
+                        </select>
+                        <span asp-validation-for="SchoolTypeId" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Status" class="form-label"></label>
+                        <select asp-for="Status" class="form-select">
+                            <option value="">-- Select Status --</option>
+                            @foreach (var status in Enum.GetValues(typeof(Group03_Kindergarten_Suggestion_System_Project.Models.Enums.SchoolStatus)))
+                            {
+                                <option value="@status">@status</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-success px-4">Create</button>
+            <a asp-action="Index" class="btn btn-secondary px-4">Cancel</a>
+        </div>
+    </form>
+</div>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Khởi tạo Select2 cho các dropdown
+            $("#provinceSelect").select2({
+                placeholder: "-- Select Province --",
+                allowClear: true,
+                width: '100%'
+            });
+            $("#districtSelect").select2({
+                placeholder: "-- Select District --",
+                allowClear: true,
+                width: '100%'
+            });
+            $("#wardSelect").select2({
+                placeholder: "-- Select Ward --",
+                allowClear: true,
+                width: '100%'
+            });
+
+            // Lấy giá trị ban đầu của Province và District khi trang load
+            var initialProvinceId = $("#provinceSelect").val();
+            var initialDistrictId = $("#districtSelect").val();
+
+            // Nếu có ProvinceId ban đầu, load Districts
+            if (initialProvinceId) {
+                loadDistricts(initialProvinceId, initialDistrictId);
+            }
+
+            // Khi Province thay đổi
+            $("#provinceSelect").on("change", function () {
+                var provinceId = $(this).val();
+                console.log("Province changed to: ", provinceId); // Debug giá trị ProvinceId
+                loadDistricts(provinceId);
+            });
+
+            // Khi District thay đổi
+            $("#districtSelect").on("change", function () {
+                var districtId = $(this).val();
+                console.log("District changed to: ", districtId); // Debug giá trị DistrictId
+                loadWards(districtId);
+            });
+
+            // Hàm load Districts
+            function loadDistricts(provinceId, selectedDistrictId = null) {
+                if (provinceId) {
+                    // Chuyển đổi provinceId thành số nguyên
+                    provinceId = parseInt(provinceId);
+                    console.log("Loading districts for ProvinceId: ", provinceId); // Debug
+
+                    $.ajax({
+                        url: '@Url.Action("GetDistricts", "School", new { area = "Administration" })',
+                        type: "GET",
+                        data: { provinceId: provinceId },
+                        success: function (data) {
+                            console.log("Districts data received: ", data); // Debug dữ liệu trả về
+                            $("#districtSelect").empty().append('<option value="">-- Select District --</option>');
+                            $.each(data, function (index, item) {
+                                var isSelected = (selectedDistrictId && item.id == selectedDistrictId) ? "selected" : "";
+                                $("#districtSelect").append('<option value="' + item.id + '" ' + isSelected + '>' + item.name + '</option>');
+                            });
+                            $("#districtSelect").trigger('change.select2'); // Cập nhật giao diện Select2
+                            // Reset Ward khi Province thay đổi
+                            $("#wardSelect").empty().append('<option value="">-- Select Ward --</option>');
+                            $("#wardSelect").trigger('change.select2');
+                            // Nếu có District được chọn, load Wards
+                            if (selectedDistrictId) {
+                                loadWards(selectedDistrictId);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error loading districts: ", error); // Debug lỗi
+                            alert("Error loading districts: " + error);
+                        }
+                    });
+                } else {
+                    $("#districtSelect").empty().append('<option value="">-- Select District --</option>');
+                    $("#districtSelect").trigger('change.select2');
+                    $("#wardSelect").empty().append('<option value="">-- Select Ward --</option>');
+                    $("#wardSelect").trigger('change.select2');
+                }
+            }
+
+            // Hàm load Wards
+            function loadWards(districtId) {
+                if (districtId) {
+                    // Chuyển đổi districtId thành số nguyên
+                    districtId = parseInt(districtId);
+                    console.log("Loading wards for DistrictId: ", districtId); // Debug
+
+                    $.ajax({
+                        url: '@Url.Action("GetWards", "School", new { area = "Administration" })',
+                        type: "GET",
+                        data: { districtId: districtId },
+                        success: function (data) {
+                            console.log("Wards data received: ", data); // Debug dữ liệu trả về
+                            $("#wardSelect").empty().append('<option value="">-- Select Ward --</option>');
+                            $.each(data, function (index, item) {
+                                $("#wardSelect").append('<option value="' + item.id + '">' + item.name + '</option>');
+                            });
+                            $("#wardSelect").trigger('change.select2'); // Cập nhật giao diện Select2
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error loading wards: ", error); // Debug lỗi
+                            alert("Error loading wards: " + error);
+                        }
+                    });
+                } else {
+                    $("#wardSelect").empty().append('<option value="">-- Select Ward --</option>');
+                    $("#wardSelect").trigger('change.select2');
+                }
+            }
+        });
+    </script>
+}

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
 {
     [DbContext(typeof(KindergartenSSDatabase))]
-    [Migration("20250302071406_AddUserHistoryTable")]
-    partial class AddUserHistoryTable
+    [Migration("20250310134747_UpdateSchoolEnrollment")]
+    partial class UpdateSchoolEnrollment
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -364,7 +364,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("EnrolledDate")
+                    b.Property<DateTime?>("EnrolledDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ParentId")
@@ -609,7 +609,6 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RoleId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")

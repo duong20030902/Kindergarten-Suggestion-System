@@ -1,0 +1,103 @@
+﻿@using Group03_Kindergarten_Suggestion_System_Project.Models.Enums
+@model IEnumerable<SchoolEnrollment>
+
+<div class="card border-primary mb-4">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">
+            <i class="fa fa-file-alt mr-2"></i>Các Đơn Yêu Cầu
+        </h4>
+        <button class="btn btn-light btn-sm">
+            <i class="fa fa-search mr-1"></i>Search
+        </button>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="bg-light">
+                    <tr>
+                        <th>Mã Đơn</th>
+                        <th>Trường</th>
+                        <th>Mô Tả</th>
+                        <th>Ngày Tạo</th>
+                        <th>Trạng Thái</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Any())
+                    {
+                        @foreach (var request in Model)
+                        {
+                            <tr>
+                                <td>#@request.Id.ToString().Substring(0, 6).ToUpper()</td>
+                                <td>@request.School.Name</td>
+                                <td>
+                                    @(request.Desctiption.Length > 10 ? request.Desctiption.Substring(0, 10) + "..." : request.Desctiption)
+                                </td>
+                                <td>@request.CreatedAt.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    @switch (request.Status)
+                                    {
+                                        case EnrollStatus.Pending:
+                                            <span class="badge badge-secondary">Chờ duyệt</span>
+                                            break;
+                                        case EnrollStatus.Processing:
+                                            <span class="badge badge-warning">Đang xử lý</span>
+                                            break;
+                                        case EnrollStatus.Enroll:
+                                            <span class="badge badge-success">Đã duyệt</span>
+                                            break;
+                                        case EnrollStatus.Cancelled:
+                                            <span class="badge badge-danger">Từ chối</span>
+                                            break;
+                                        default:
+                                            <span class="badge badge-secondary">Chờ duyệt</span>
+                                            break;
+                                    }
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#requestDetailModal" data-request="@request.Id">
+                                        <i class="fa fa-eye"></i>
+                                    </button>
+                                    @if (request.Status == EnrollStatus.Pending)
+                                    {
+                                        <a asp-area="" asp-controller="Profile" asp-action="EditRequest" asp-route-id="@request.Id" class="btn btn-sm btn-info">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <a asp-area="" asp-controller="Parent" asp-action="Delete" asp-route-id="@request.Id" class="btn btn-sm btn-danger">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center">Không có đơn yêu cầu nào</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @if (Model.Count() > 5)
+    {
+        <div class="card-footer text-center">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center mb-0">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Trước</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Sau</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    }
+</div>

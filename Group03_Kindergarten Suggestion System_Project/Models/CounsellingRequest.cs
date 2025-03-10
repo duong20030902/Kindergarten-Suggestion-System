@@ -12,7 +12,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Models
         public string Phone { get; set; }
         public string Inquiry { get; set; }
         public RequestStatus Status { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; }
 
         [EmailAddress]

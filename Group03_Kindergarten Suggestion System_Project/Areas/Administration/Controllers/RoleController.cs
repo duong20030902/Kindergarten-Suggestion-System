@@ -2,6 +2,7 @@
 using Group03_Kindergarten_Suggestion_System_Project.Data;
 using Group03_Kindergarten_Suggestion_System_Project.Models;
 using Group03_Kindergarten_Suggestion_System_Project.Services.Email;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.Controllers
 {
     [Area("Administration")]
+    [Authorize(Roles = "Admin")]
     public class RoleController : Controller
     {
         private readonly KindergartenSSDatabase _context;
@@ -49,7 +51,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.Co
                     {
                         var role = new Role(model.Name)
                         {
-                            IsActive = true // Mặc định luôn active
+                            IsActive = true 
                         };
                         var result = await _roleManager.CreateAsync(role);
                         if (result.Succeeded)
@@ -107,7 +109,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.Co
                     return RedirectToAction("Index");
                 }
 
-                role.Name = model.Name; // Chỉ cập nhật Name, không thay đổi IsActive
+                role.Name = model.Name; 
                 var result = await _roleManager.UpdateAsync(role);
                 if (result.Succeeded)
                 {

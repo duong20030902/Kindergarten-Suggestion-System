@@ -1,22 +1,33 @@
+﻿using Group03_Kindergarten_Suggestion_System_Project.Data;
 using Group03_Kindergarten_Suggestion_System_Project.Models;
+using Group03_Kindergarten_Suggestion_System_Project.Models.Enums;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace Group03_Kindergarten_Suggestion_System_Project.Controllers
 {
     public class HomeController : Controller
     {
-        
-        private readonly ILogger<HomeController> _logger;
+        private readonly KindergartenSSDatabase _context;
+        private readonly UserManager<User> _userManager;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(KindergartenSSDatabase context, UserManager<User> userManager)
         {
-            _logger = logger;
+            _context = context;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var schools = _context.Schools
+     .Where(s => s.Status == SchoolStatus.Published)
+     .Include(s => s.ChildAge)
+     .ToList();
+            Console.WriteLine($"Found {schools.Count} schools");
+
+            return View(schools);
         }
 
         public IActionResult Privacy()

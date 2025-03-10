@@ -1,7 +1,10 @@
 ﻿using Group03_Kindergarten_Suggestion_System_Project.Models;
 using Group03_Kindergarten_Suggestion_System_Project.ViewModels;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.InteropServices;
+using System.Security.Claims;
 
 namespace Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.Controllers
 {
@@ -24,51 +27,86 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.Co
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken] // Bảo vệ chống tấn công CSRF
+        // Xử lý đăng nhập
         public async Task<IActionResult> Login(LoginVm login)
         {
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("ModelState không hợp lệ");
                 return View(login);
             }
 
+            // Tìm user bằng email
             var user = await _userManager.FindByEmailAsync(login.Email);
             if (user == null)
             {
-                Console.WriteLine($"Không tìm thấy user với email: {login.Email}");
                 ModelState.AddModelError(string.Empty, "Email không tồn tại trong hệ thống.");
                 return View(login);
             }
 
-            // Chỉ kiểm tra thời gian 7 ngày, không yêu cầu EmailConfirmed trước
+            // Kiểm tra xem user có role không
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles == null || !roles.Any())
+            {
+                ModelState.AddModelError(string.Empty, "Tài khoản của bạn không có vai trò nào được gán. Vui lòng liên hệ hỗ trợ.");
+                return View(login);
+            }
+
+            // Không cho phép Parent dùng trang đăng nhập này
+            if (roles.Contains("Parent"))
+            {
+                ModelState.AddModelError(string.Empty, "This login is not for Parents. Please use the Parent login page.");
+                return View(login);
+            }
+
+            // Kiểm tra email xác nhận trong 7 ngày kể từ khi tạo tài khoản
             if (!user.EmailConfirmed && DateTime.UtcNow > user.CreatedAt.AddDays(7))
             {
-                Console.WriteLine($"Tài khoản {login.Email} đã bị khóa (quá 7 ngày)");
                 ModelState.AddModelError(string.Empty, "Tài khoản đã bị khóa. Vui lòng liên hệ admin để gửi lại thông tin đăng nhập.");
                 return View(login);
             }
 
-            var result = await _signInManager.PasswordSignInAsync(user.UserName, login.Password, login.RememberMe, lockoutOnFailure: false);
+            // Kiểm tra mật khẩu
+            var result = await _signInManager.CheckPasswordSignInAsync(user, login.Password, lockoutOnFailure: false);
             if (result.Succeeded)
             {
-                Console.WriteLine($"Đăng nhập thành công cho {login.Email}");
+                // Đăng nhập với Identity
+                await _signInManager.SignInAsync(user, login.RememberMe);
+
+                // Tạo claims cho scheme xác thực Admin
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Role, "Admin")
+                };
+                var claimsIdentity = new ClaimsIdentity(claims, "AdminAuth");
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = login.RememberMe, // Lưu cookie nếu chọn "Remember Me"
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddDays(1) // Hết hạn sau 1 ngày
+                };
+
+                // Đăng nhập với scheme AdminAuth
+                await HttpContext.SignInAsync("AdminAuth", new ClaimsPrincipal(claimsIdentity), authProperties);
+
+                // Cập nhật User hiện tại ngay lập tức
+                HttpContext.User = new ClaimsPrincipal(claimsIdentity);
+
+                // Tự động xác nhận email nếu trong 7 ngày đầu
                 if (!user.EmailConfirmed && DateTime.UtcNow <= user.CreatedAt.AddDays(7))
                 {
                     user.EmailConfirmed = true;
                     var updateResult = await _userManager.UpdateAsync(user);
                     if (!updateResult.Succeeded)
                     {
-                        Console.WriteLine($"Lỗi cập nhật EmailConfirmed cho {login.Email}: {string.Join(", ", updateResult.Errors.Select(e => e.Description))}");
                         ModelState.AddModelError(string.Empty, "Không thể cập nhật trạng thái tài khoản. Vui lòng thử lại.");
                         return View(login);
                     }
-                    Console.WriteLine($"EmailConfirmed cập nhật thành true cho {login.Email}");
                 }
                 return RedirectToAction("Index", "Home", new { area = "Administration" });
             }
 
-            Console.WriteLine($"Đăng nhập thất bại cho {login.Email} - Mật khẩu sai?");
             ModelState.AddModelError(string.Empty, "Mật khẩu không đúng.");
             return View(login);
         }
@@ -76,6 +114,13 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.Co
         public IActionResult ResetPassword()
         {
             return View();
+        }
+
+        [HttpGet]
+        // Trang từ chối truy cập
+        public IActionResult AccessDenied()
+        {
+            return BadRequest("You do not have permission to access this page.");
         }
     }
 }

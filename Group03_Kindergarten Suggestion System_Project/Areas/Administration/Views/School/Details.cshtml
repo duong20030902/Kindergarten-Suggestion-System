@@ -1,0 +1,101 @@
+﻿@model Group03_Kindergarten_Suggestion_System_Project.Models.School
+
+@{
+    ViewData["Title"] = "School Details";
+}
+
+<div class="content-page">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <div class="header-title">
+                            <h4 class="card-title">School Details</h4>
+                        </div>
+                        <div class="header-title">
+                            <a asp-action="Edit" asp-route-id="@Model.Id"
+                               class="btn btn-outline-primary border add-btn shadow-none mx-2 d-none d-md-block">
+                                <i class="las la-edit mr-2"></i>Edit School
+                            </a>
+                            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th>Name:</th>
+                                    <td>@Model.Name</td>
+                                </tr>
+                                <tr>
+                                    <th>Code:</th>
+                                    <td>@Model.SchoolCode</td>
+                                </tr>
+                                <tr>
+                                    <th>Phone:</th>
+                                    <td>@Model.Phone</td>
+                                </tr>
+                                <tr>
+                                    <th>Address:</th>
+                                    <td>
+                                        @(Model.Address != null
+                                            ? $"{Model.Address.Ward?.Name}, {Model.Address.District?.Name}, {Model.Address.Province?.Name}"
+                                            : "No Address")
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Owner:</th>
+                                    <td>@(Model.ShoolOwner?.FirstName ?? "Unknown") @(Model.ShoolOwner?.LastName ?? "Unknown")</td>
+                                </tr>
+                                <tr>
+                                    <th>School Type:</th>
+                                    <td>@(Model.SchoolType?.Name ?? "N/A")</td>
+                                </tr>
+                                <tr>
+                                    <th>Education Method:</th>
+                                    <td>@(Model.EducationMethod?.Name ?? "N/A")</td>
+                                </tr>
+                                <tr>
+                                    <th>Fee Range:</th>
+                                    <td>@Model.FeeFrom.ToString("N0") VND - @Model.FeeTo.ToString("N0") VND</td>
+                                </tr>
+                                <tr>
+                                    <th>Rating:</th>
+                                    <td>@Model.GetRating().ToString("0.0") / 5</td>
+                                </tr>
+                                <tr>
+                                    <th>Creator:</th>
+                                    <td>@(Model.Creator?.FirstName ?? "Unknown") @(Model.Creator?.LastName ?? "Unknown")</td>
+                                </tr>
+                                <tr>
+                                    <th>Acceptor:</th>
+                                    <td>@(Model.Acceptor?.FirstName ?? "Unknown") @(Model.Acceptor?.LastName ?? "Unknown")</td>
+                                </tr>
+                                <tr>
+                                    <th>Created At:</th>
+                                    <td>@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                                </tr>
+                                <tr>
+                                    <th>Updated At:</th>
+                                    <td>@(Model.UpdatedAt?.ToString("yyyy-MM-dd HH:mm") ?? "N/A")</td>
+                                </tr>
+                                <tr>
+                                    <th>Published At:</th>
+                                    <td>@(Model.PublishedAt?.ToString("yyyy-MM-dd HH:mm") ?? "N/A")</td>
+                                </tr>
+                                <tr>
+                                    <th>Description:</th>
+                                    <td>@Model.Description</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+                        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
