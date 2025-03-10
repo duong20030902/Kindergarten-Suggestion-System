@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Group03_Kindergarten_Suggestion_System_Project.Migrations
 {
     [DbContext(typeof(KindergartenSSDatabase))]
-    [Migration("20250302071406_AddUserHistoryTable")]
-    partial class AddUserHistoryTable
+    [Migration("20250308100806_fa")]
+    partial class fa
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

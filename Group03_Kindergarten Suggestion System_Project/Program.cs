@@ -22,6 +22,7 @@ builder.Services.AddDbContext<KindergartenSSDatabase>(options =>
 
 // Thêm Controllers với Views
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
 // Cấu hình xác thực với hai scheme: ParentAuth và AdminAuth
 builder.Services.AddAuthentication(
@@ -123,5 +124,6 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapRazorPages();
 
 app.Run();

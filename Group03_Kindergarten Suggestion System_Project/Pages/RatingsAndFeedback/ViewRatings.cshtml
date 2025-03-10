@@ -1,0 +1,75 @@
+﻿@page "{schoolId}"
+@model Group03_Kindergarten_Suggestion_System_Project.Pages.Ratings.ViewRatingsModel
+@{
+    ViewData["Title"] = "Ratings & Feedbacks";
+}
+
+<div class="container mt-4">
+    <h2>Ratings & Feedbacks</h2>
+
+    <div class="row mb-3">
+        <div class="col-md-5">
+            <label>From</label>
+            <input type="date" class="form-control" id="fromDate">
+        </div>
+        <div class="col-md-5">
+            <label>To</label>
+            <input type="date" class="form-control" id="toDate">
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button class="btn btn-outline-secondary" onclick="refreshPage()">
+                🔄 Refresh
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h5>Ratings</h5>
+            <p>Learning Program: @RenderStars((int)Math.Round(Model.LearningProgramRating))</p>
+            <p>Facilities & Utilities: @RenderStars((int)Math.Round(Model.FacilitiesRating))</p>
+            <p>Extracurricular Activities: @RenderStars((int)Math.Round(Model.ExtracurricularRating))</p>
+            <p>Teachers & Staff: @RenderStars((int)Math.Round(Model.TeachersStaffRating))</p>
+            <p>Hygiene and Nutrition: @RenderStars((int)Math.Round(Model.HygieneNutritionRating))</p>
+        </div>
+
+        <div class="col-md-3">
+            <h5>Average Rating</h5>
+            <p>@RenderStars((int)Math.Round(Model.AverageRating))</p>
+        </div>
+        <div class="col-md-3">
+            <h5>No. of feedbacks</h5>
+            <p>@Model.TotalReviews</p>
+        </div>
+    </div>
+
+    <h5 class="mt-4">All feedbacks</h5>
+    @foreach (var rating in Model.Ratings)
+    {
+        <div class="d-flex align-items-center mb-3">
+            <img src="/images/@rating.Parent.Image" class="rounded-circle" width="50" height="50" />
+            <div class="ms-3">
+                <strong>@rating.Parent.FirstName @rating.Parent.LastName</strong> <small class="text-muted">@rating.CreatedAt.ToShortDateString()</small>
+                <p>@rating.Feedback</p>
+                <p>@RenderStars((int)Math.Round(rating.GetAvgRating()))</p>
+            </div>
+        </div>
+    }
+
+    <div class="text-center">
+        <a href="#" class="text-primary">View more feedbacks...</a>
+    </div>
+</div>
+
+@functions {
+    string RenderStars(int stars)
+    {
+        return string.Concat(Enumerable.Repeat("⭐", stars)) + string.Concat(Enumerable.Repeat("☆", 5 - stars));
+    }
+}
+
+<script>
+    function refreshPage() {
+        location.reload();
+    }
+</script>
