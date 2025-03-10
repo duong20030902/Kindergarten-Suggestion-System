@@ -8,7 +8,7 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Models
     {
         [Key]
         public Guid Id { get; set; }
-        public DateTime EnrolledDate { get; set; }
+        public DateTime? EnrolledDate { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; }
         public EnrollStatus Status { get; set; }

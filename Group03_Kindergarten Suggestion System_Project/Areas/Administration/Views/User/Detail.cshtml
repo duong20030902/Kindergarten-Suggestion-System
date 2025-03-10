@@ -98,7 +98,17 @@
                                             </tr>
                                             <tr>
                                                 <th>Phone</th>
-                                                <td>@Model.User.PhoneNumber</td>
+                                                <td>
+                                                    @if (Model.User.PhoneNumber != null)
+                                                    {
+                                                        @Model.User.PhoneNumber
+                                                    }
+                                                    else
+                                                    {
+                                                        @:N/A
+                                                    }
+                                                </td>
+
                                             </tr>
                                             <tr>
                                                 <th>Birth Date</th>
@@ -106,7 +116,16 @@
                                             </tr>
                                             <tr>
                                                 <th>Address</th>
-                                                <td>@Model.User.Address</td>
+                                                <td>
+                                                    @if (Model.User.Address != null)
+                                                    {
+                                                        @($"{Model.User.Address.Detail}, {Model.User.Address.Ward.Name}, {Model.User.Address.District.Name}, {Model.User.Address.Province.Name}")
+                                                    }
+                                                    else
+                                                    {
+                                                        @:N/A
+                                                    }
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <th>Status</th>

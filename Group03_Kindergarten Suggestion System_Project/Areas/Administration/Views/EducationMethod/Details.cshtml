@@ -1,0 +1,47 @@
+﻿@model Group03_Kindergarten_Suggestion_System_Project.Models.EducationMethod
+
+@{
+    ViewData["Title"] = "EducationMethod Detail";
+}
+
+
+
+<div class="content-page">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <div class="header-title">
+                            <h4 class="card-title">EducationMethod Detail</h4>
+                        </div>
+                       
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+
+                            <table id="school-list-table" class="data-tables table table-striped dataTable mt-4">
+
+                                <tr>
+                                    <th>Name:</th>
+                                    <td>@Model.Name</td>
+                                </tr>
+                            </table>
+                            <a asp-action="Edit" asp-route-id="@Model.Id"
+                                       class="btn btn-outline-primary border add-btn shadow-none mx-2 d-none d-md-block">
+                                <i class="las la-edit mr-2"></i>Edit EducationMethod
+                                    </a>
+                            <a asp-action="Index" class="btn btn-outline-primary border add-btn shadow-none mx-2 d-none d-md-block">Back To List</a>
+                                 
+                                
+                           
+                        </div>
+                    </div>
+                 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

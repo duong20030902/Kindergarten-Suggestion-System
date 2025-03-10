@@ -1,5 +1,7 @@
-﻿@{
-    ViewData["Title"] = "User Profile";
+﻿@using Group03_Kindergarten_Suggestion_System_Project.ViewModels
+@model UserProfileVm
+@{
+    ViewData["Title"] = @Model.FirstName + " " + @Model.LastName;
 }
 
 <div class="container-fluid pt-5">
@@ -9,64 +11,77 @@
                 <div class="card border-primary">
                     <div class="card-header bg-primary text-white text-center">
                         <h4 class="card-title mb-0">
-                            <i class="fa fa-user-circle mr-2"></i>Nguyễn Văn A
+                            <i class="fa fa-user-circle mr-2"></i>@Model.FirstName @Model.LastName
                         </h4>
                     </div>
                     <div class="card-body text-center">
-                        <img src="~/img/default-avatar.jpg" class="img-fluid rounded-circle mb-4"
+                        <img src="~/img/users/@Model.Image" class="img-fluid rounded-circle mb-4"
                              alt="Profile Picture" style="max-width: 250px;">
-
-                        <div class="mb-3">
+                        <div class="mb-4">
+                            <h5 class="text-primary">
+                                <i class="fa fa-info-circle mr-2"></i>Thông Tin Cá Nhân
+                            </h5>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-borderless">
+                                    <tbody>
+                                        <tr>
+                                            <th class="text-right">Tên tài khoản:</th>
+                                            <td class="text-left">@Model.UserName</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-right">Ngày sinh:</th>
+                                            <td class="text-left">@Model.BirthDate.ToString("dd/MM/yyyy")</td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="mb-4">
                             <h5 class="text-primary">
                                 <i class="fa fa-envelope mr-2"></i>Thông Tin Liên Hệ
                             </h5>
-                            <p class="mb-1">Email: nguyenvana@example.com</p>
-                            <p>Điện Thoại: 0888 686 999</p>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-borderless">
+                                    <tbody>
+                                        <tr>
+                                            <th class="text-right">Email:</th>
+                                            <td class="text-left">@Model.Email</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-right"><i class="fa fa-phone mr-1 text-muted"></i></th>
+                                            <td class="text-left">@Model.PhoneNumber</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-right"><i class="fa fa-map-marker mr-1 text-muted"></i></th>
+                                            <td class="text-left">
+                                                @if (Model.AddressDetail != null)
+                                                {
+                                                    @($"{Model.AddressDetail}, {Model.WardName}, {Model.DistrictName}, {Model.ProvinceName}")
+                                                }
+                                                else
+                                                {
+                                                    @:N/A
+                                                }
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-
-                        <div>
-                            <h5 class="text-primary">
-                                <i class="fa fa-child mr-2"></i>Thông Tin Con
-                            </h5>
-                            <ul class="list-unstyled">
-                                <li class="mb-2">
-                                    <div class="card border-primary">
-                                        <div class="card-body d-flex align-items-center">
-                                            <div class="rounded-circle bg-primary p-2 mr-3">
-                                                <i class="fa fa-baby text-white"></i>
-                                            </div>
-                                            <div>
-                                                <strong>Nguyễn Văn B</strong>
-                                                <p class="text-muted mb-0">Tuổi: 5 | Lớp: Mầm Non</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="mb-2">
-                                    <div class="card border-primary">
-                                        <div class="card-body d-flex align-items-center">
-                                            <div class="rounded-circle bg-primary p-2 mr-3">
-                                                <i class="fa fa-baby text-white"></i>
-                                            </div>
-                                            <div>
-                                                <strong>Nguyễn Văn C</strong>
-                                                <p class="text-muted mb-0">Tuổi: 3 | Lớp: Chồi</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
+                        <button type="button" class="btn btn-success btn-block mb-3" data-toggle="modal" data-target="#supportModal">
+                            <i class="fa fa-question-circle mr-2"></i>Gửi Yêu Cầu Hỗ Trợ
+                        </button>
                     </div>
                     <div class="card-footer">
                         <div class="row">
                             <div class="col-6">
-                                <a href="#" class="btn btn-primary btn-block">
+                                <a asp-area="" asp-controller="Profile" asp-action="EditProfile" asp-route-Id="@Model.Id" class="btn btn-primary btn-block">
                                     <i class="fa fa-edit mr-2"></i>Chỉnh Sửa Hồ Sơ
                                 </a>
                             </div>
                             <div class="col-6">
-                                <a href="#" class="btn btn-outline-primary btn-block">
+                                <a asp-area ="" asp-controller="Profile" asp-action="ChangePassword" class="btn btn-outline-primary btn-block">
                                     <i class="fa fa-lock mr-2"></i>Đổi Mật Khẩu
                                 </a>
                             </div>
@@ -74,50 +89,8 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-lg-8">
-                <div class="card border-primary mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h4 class="mb-0">
-                            <i class="fa fa-graduation-cap mr-2"></i>Lớp Học Hiện Tại
-                        </h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <div class="card h-100 border-primary">
-                                    <div class="card-body">
-                                        <h5 class="card-title text-primary">Lớp Mầm Non A1</h5>
-                                        <p class="card-text">
-                                            <strong>Giáo Viên:</strong> Trần Thị D<br />
-                                            <strong>Lịch Học:</strong> Thứ 2,4,6 (8:00 - 11:00)<br />
-                                            <strong>Độ Tuổi:</strong> 3-4 tuổi
-                                        </p>
-                                    </div>
-                                    <div class="card-footer">
-                                        <a href="#" class="btn btn-sm btn-outline-primary">Xem Chi Tiết</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="card h-100 border-primary">
-                                    <div class="card-body">
-                                        <h5 class="card-title text-primary">Lớp Chồi B2</h5>
-                                        <p class="card-text">
-                                            <strong>Giáo Viên:</strong> Nguyễn Thị E<br />
-                                            <strong>Lịch Học:</strong> Thứ 3,5,7 (9:00 - 12:00)<br />
-                                            <strong>Độ Tuổi:</strong> 4-5 tuổi
-                                        </p>
-                                    </div>
-                                    <div class="card-footer">
-                                        <a href="#" class="btn btn-sm btn-outline-primary">Xem Chi Tiết</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+                @await Component.InvokeAsync("Requests")
                 <div class="card border-primary">
                     <div class="card-header bg-primary text-white">
                         <h4 class="mb-0">
@@ -128,15 +101,15 @@
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <div>
-                                    <strong>Đăng Ký Lớp Học</strong>
-                                    <p class="text-muted mb-0">Đăng ký lớp Mầm Non A1 cho bé B</p>
+                                    <strong>Tạo Đơn Yêu Cầu</strong>
+                                    <p class="text-muted mb-0">Đổi lịch học cho bé</p>
                                 </div>
-                                <span class="badge bg-primary rounded-pill">05 Tháng 2</span>
+                                <span class="badge bg-primary rounded-pill">01 Tháng 3</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <div>
                                     <strong>Thanh Toán Học Phí</strong>
-                                    <p class="text-muted mb-0">Thanh toán học phí tháng 2 cho hai bé</p>
+                                    <p class="text-muted mb-0">Thanh toán học phí tháng 2</p>
                                 </div>
                                 <span class="badge bg-primary rounded-pill">01 Tháng 2</span>
                             </li>
@@ -154,3 +127,149 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Hỗ Trợ -->
+<div class="modal fade" id="supportModal" tabindex="-1" role="dialog" aria-labelledby="supportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="supportModalLabel">Gửi Yêu Cầu Hỗ Trợ</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="supportType">Loại Yêu Cầu</label>
+                        <select class="form-control" id="supportType" required>
+                            <option value="">-- Chọn loại yêu cầu --</option>
+                            <option value="question">Câu Hỏi/Thắc Mắc</option>
+                            <option value="feedback">Góp Ý/Phản Hồi</option>
+                            <option value="support">Yêu Cầu Hỗ Trợ</option>
+                            <option value="other">Khác</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="childSelect">Liên Quan Đến Trẻ (nếu có)</label>
+                        <select class="form-control" id="childSelect">
+                            <option value="">-- Không liên quan đến trẻ --</option>
+                            <option value="child1">Nguyễn Văn B</option>
+                            <option value="child2">Nguyễn Văn C</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="supportSubject">Tiêu Đề</label>
+                        <input type="text" class="form-control" id="supportSubject" placeholder="Nhập tiêu đề yêu cầu" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="supportContent">Nội Dung</label>
+                        <textarea class="form-control" id="supportContent" rows="5" placeholder="Mô tả chi tiết yêu cầu của bạn" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="supportAttachment">Đính Kèm Tệp (nếu có)</label>
+                        <input type="file" class="form-control-file" id="supportAttachment">
+                        <small class="form-text text-muted">Hỗ trợ file: JPG, PNG, PDF. Kích thước tối đa: 5MB</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary">Gửi Yêu Cầu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Cập Nhật Thông Tin Trẻ -->
+<div class="modal fade" id="childInfoModal" tabindex="-1" role="dialog" aria-labelledby="childInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="childInfoModalLabel">Cập Nhật Thông Tin Trẻ</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="childName">Họ và Tên</label>
+                            <input type="text" class="form-control" id="childName" placeholder="Họ và tên của trẻ" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="childDob">Ngày Sinh</label>
+                            <input type="date" class="form-control" id="childDob" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="childGender">Giới Tính</label>
+                            <select class="form-control" id="childGender" required>
+                                <option value="male">Nam</option>
+                                <option value="female">Nữ</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="childClass">Lớp</label>
+                            <select class="form-control" id="childClass" required>
+                                <option value="mamNonA1">Mầm Non A1</option>
+                                <option value="mamNonA2">Mầm Non A2</option>
+                                <option value="choiB1">Chồi B1</option>
+                                <option value="choiB2">Chồi B2</option>
+                                <option value="laC1">Lá C1</option>
+                                <option value="laC2">Lá C2</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="childAllergies">Thông Tin Dị Ứng (nếu có)</label>
+                        <textarea class="form-control" id="childAllergies" rows="2" placeholder="Liệt kê các thực phẩm hoặc thuốc mà trẻ bị dị ứng"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="childMedical">Thông Tin Y Tế</label>
+                        <textarea class="form-control" id="childMedical" rows="2" placeholder="Các vấn đề sức khỏe cần lưu ý"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="childPhoto">Ảnh Trẻ</label>
+                        <input type="file" class="form-control-file" id="childPhoto">
+                        <small class="form-text text-muted">Định dạng: JPG, PNG. Kích thước tối đa: 2MB</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary">Lưu Thông Tin</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script để truyền dữ liệu vào modal -->
+<script>
+    $('#childInfoModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var childName = button.data('child');
+        var modal = $(this);
+        modal.find('.modal-title').text('Cập Nhật Thông Tin Trẻ: ' + childName);
+        modal.find('#childName').val(childName);
+
+        // Điền thêm thông tin dựa vào tên trẻ nếu cần
+        if (childName === "Nguyễn Văn B") {
+            modal.find('#childClass').val('mamNonA1');
+        } else if (childName === "Nguyễn Văn C") {
+            modal.find('#childClass').val('choiB2');
+        }
+    });
+
+   
+</script>

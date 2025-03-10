@@ -93,44 +93,32 @@
                                     <input asp-for="BirthDate" type="date" class="form-control" placeholder="Birth Date" required>
                                     <span asp-validation-for="BirthDate" class="text-danger"></span>
                                 </div>
-                                @* <div class="form-group col-md-4">
-                                        <label>City:</label>
-                                        <select name="type" class="selectpicker form-control" data-style="py-0">
-                                            <option>Select City</option>
-                                            <option>Caneda</option>
-                                            <option>Noida</option>
-                                            <option>USA</option>
-                                            <option>India</option>
-                                            <option>Africa</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group col-md-4">
-                                        <label>District:</label>
-                                        <select name="type" class="selectpicker form-control" data-style="py-0">
-                                            <option>Select District</option>
-                                            <option>Caneda</option>
-                                            <option>Noida</option>
-                                            <option>USA</option>
-                                            <option>India</option>
-                                            <option>Africa</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group col-md-4">
-                                        <label>Ward:</label>
-                                        <select name="type" class="selectpicker form-control" data-style="py-0">
-                                            <option>Select Ward</option>
-                                            <option>Caneda</option>
-                                            <option>Noida</option>
-                                            <option>USA</option>
-                                            <option>India</option>
-                                            <option>Africa</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label asp-for="Address"></label>
-                                        <input type="text" class="form-control" placeholder="Address">
-                                        <span asp-validation-for="Address" class="text-danger"></span>
-                                    </div> *@
+                                <div class="form-group col-md-4">
+                                    <label>Province:</label>
+                                    <select asp-for="ProvinceId" asp-items="ViewBag.Provinces" class="selectpicker form-control" data-style="py-0" onchange="updateDistricts()">
+                                        <option value="">Select Province</option>
+                                    </select>
+                                    <span asp-validation-for="ProvinceId" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>District:</label>
+                                    <select asp-for="DistrictId" asp-items="ViewBag.Districts" class="selectpicker form-control" data-style="py-0" onchange="updateWards()">
+                                        <option value="">Select District</option>
+                                    </select>
+                                    <span asp-validation-for="DistrictId" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>Ward:</label>
+                                    <select asp-for="WardId" asp-items="ViewBag.Wards" class="selectpicker form-control" data-style="py-0">
+                                        <option value="">Select Ward</option>
+                                    </select>
+                                    <span asp-validation-for="WardId" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <label>Address Detail:</label>
+                                    <input asp-for="AddressDetail" type="text" class="form-control" placeholder="Enter address detail (e.g., street, house number)">
+                                    <span asp-validation-for="AddressDetail" class="text-danger"></span>
+                                </div>
                                 <div class="form-group col-md-6">
                                     <label>Status:</label>
                                     <select asp-for="EmailConfirmed" class="selectpicker form-control" data-style="py-0">
@@ -159,6 +147,10 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
+        $(document).ready(function() {
+            $('.selectpicker').selectpicker(); // Khởi tạo selectpicker khi trang được tải
+        });
+
         function previewImage(event) {
             const file = event.target.files[0];
             const preview = document.getElementById('profileImage');
@@ -168,6 +160,66 @@
                     preview.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
+            }
+        }
+
+        // Cập nhật danh sách District khi thay đổi Province
+        function updateDistricts() {
+            var provinceId = document.getElementById("ProvinceId").value;
+            if (provinceId) {
+                fetch(`/Administration/User/GetDistricts?provinceId=${provinceId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        var districtDropdown = document.getElementById("DistrictId");
+                        districtDropdown.innerHTML = '<option value="">Select District</option>';
+                        data.forEach(district => {
+                            districtDropdown.innerHTML += `<option value="${district.id}">${district.name}</option>`;
+                        });
+                        $(districtDropdown).selectpicker('refresh'); // Làm mới selectpicker
+                        updateWards(); // Cập nhật lại Ward
+                    })
+                    .catch(error => {
+                        console.error('Error fetching districts:', error);
+                    });
+            } else {
+                var districtDropdown = document.getElementById("DistrictId");
+                districtDropdown.innerHTML = '<option value="">Select District</option>';
+                $(districtDropdown).selectpicker('refresh');
+                updateWards();
+            }
+        }
+
+        // Cập nhật danh sách Ward khi thay đổi District
+        function updateWards() {
+            var districtId = document.getElementById("DistrictId").value;
+            if (districtId) {
+                fetch(`/Administration/User/GetWards?districtId=${districtId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        var wardDropdown = document.getElementById("WardId");
+                        wardDropdown.innerHTML = '<option value="">Select Ward</option>';
+                        data.forEach(ward => {
+                            wardDropdown.innerHTML += `<option value="${ward.id}">${ward.name}</option>`;
+                        });
+                        $(wardDropdown).selectpicker('refresh'); // Làm mới selectpicker
+                    })
+                    .catch(error => {
+                        console.error('Error fetching wards:', error);
+                    });
+            } else {
+                var wardDropdown = document.getElementById("WardId");
+                wardDropdown.innerHTML = '<option value="">Select Ward</option>';
+                $(wardDropdown).selectpicker('refresh');
             }
         }
     </script>

@@ -1,6 +1,7 @@
 ﻿using Group03_Kindergarten_Suggestion_System_Project.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.ViewComponents
 {
@@ -15,27 +16,40 @@ namespace Group03_Kindergarten_Suggestion_System_Project.Areas.Administration.Vi
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            if (User.Identity.IsAuthenticated)
+            if (!User.Identity.IsAuthenticated)
             {
-                var user = await _userManager.GetUserAsync(HttpContext.User);
-                if (user != null)
+                return Content(""); // Không hiển thị nếu chưa đăng nhập
+            }
+
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (user == null)
+            {
+                // Fallback: Lấy thông tin từ Claims nếu không tìm thấy user
+                var email = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+                if (!string.IsNullOrEmpty(email))
                 {
-                    var roles = await _userManager.GetRolesAsync(user);
-                    var roleName = roles.FirstOrDefault() ?? "No Role";
-
-                    var fullName = $"{user.FirstName} {user.LastName}".Trim();
-
-                    var userViewModel = new
-                    {
-                        FullName = string.IsNullOrEmpty(fullName) ? "Unknown" : fullName, 
-                        Image = user.Image, 
-                        RoleName = roleName,
-                        Id = user.Id
-                    };
-                    return View("Default", userViewModel);
+                    user = await _userManager.FindByEmailAsync(email);
                 }
             }
-            return Content(""); // Trả về rỗng nếu không đăng nhập
+
+            if (user == null)
+            {
+                return Content(""); // Trả về rỗng nếu vẫn không tìm thấy user
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var roleName = roles.FirstOrDefault() ?? "No Role";
+            var fullName = $"{user.FirstName} {user.LastName}".Trim();
+
+            var userViewModel = new
+            {
+                FullName = string.IsNullOrEmpty(fullName) ? "Unknown" : fullName,
+                Image = user.Image ?? "default.jpg", // Đảm bảo có giá trị mặc định
+                RoleName = roleName,
+                Id = user.Id
+            };
+
+            return View("Default", userViewModel);
         }
     }
 }
